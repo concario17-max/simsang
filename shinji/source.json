@@ -1,0 +1,13 @@
+{
+  "repository": "https://github.com/concario17-max/shinji",
+  "commit": "33f81d5266c36192c933d734494bd922df4702d8",
+  "stories": 237,
+  "bookEntries": 80,
+  "videos": 47,
+  "spacingCorrections": {
+    "습니 다": 212,
+    "입니 다": 117,
+    "있습 니다": 33
+  },
+  "media": "Pinned source repository images; YouTube videos remain embedded"
+}

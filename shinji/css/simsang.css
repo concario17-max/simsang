@@ -1,0 +1,38 @@
+/* Simsang archive shell. Reader themes remain independently selectable. */
+:root {--bg-core:#f7f6f0;--bg-surface:#efeee5;--bg-elevated:#e5e6d9;--bg-card:#fffef9;--bg-glass:#f7f6f0f5;--text-main:#333a30;--text-muted:#666e60;--text-dim:#777e70;--text-gold:#727854;--primary-glow:#727b55;--secondary-glow:#8c876a;--accent-gold:#85754c;--accent-cyan:#697f77;--card-border:#dcded1;--card-border-hover:#8b947a;--shadow-subtle:0 4px 16px #41493108;--shadow-luxury:0 12px 30px #41493112;--shadow-neon:none;--radius-lg:8px;--radius-md:6px;--chap-1-color:#667d62;--chap-2-color:#617d88;--chap-3-color:#847285;--chap-4-color:#94805b;--chap-5-color:#98776f;}
+html {color-scheme:light}
+.ambient-glow,.hero-glow-mesh {display:none}
+.site-header {background:#f7f6f0f5;border-bottom:1px solid #dcded1;backdrop-filter:blur(8px)}
+.brand-logo,.logo-text-group h1,.search-box input {color:#333a30}
+.logo-text-group h1 {font-family:'Noto Serif KR',serif;font-size:22px;letter-spacing:0}
+.logo-icon {background:#757d60;border-radius:3px;box-shadow:none}
+.main-mode-nav,.search-box,.hero-banner,.chapter-info-banner,.book-spotlight-card {background:#eeeee4;box-shadow:none;border-color:#dcded1}
+.hero-banner {border-radius:8px}
+.hero-banner h2 {background:none;-webkit-text-fill-color:#333a30;color:#333a30;font-family:'Noto Serif KR',serif}
+.mode-nav-btn,.chap-filter-btn,.filter-btn,.book-tab-btn {color:#626b59}
+.mode-nav-btn.active,.filter-btn.active,.chap-filter-btn.active,.book-tab-btn.active {background:#dce1ce;color:#36402e;border-color:#929c7a;box-shadow:none}
+.app-container h2,.app-container h3,.app-container .story-title,.app-container .card-title,.app-container .spotlight-title,.app-container .book-chapter-title,.app-container .book-tab-title,.app-container .chapter-range-tag,.app-container .empty-state-title {color:#333a30}
+.app-container .stat-pill,.app-container .chapter-range-tag {background:#e4e6d8}
+.app-container .book-chapter-card,.app-container .book-tab-btn,.app-container .book-spotlight-card,.app-container .card {background:#fffef9;border-color:#dcded1;box-shadow:none}
+.app-container .book-chapter-card:hover,.app-container .story-card:hover,.app-container .card:hover {border-color:#8b947a;box-shadow:0 8px 20px #41493112}
+.app-container .cover-title,.app-container .cover-author {color:#fff}
+.saved-book-filter {display:block;margin:0 0 20px;color:#626b59;font-size:14px}
+.saved-book-filter input {margin-right:6px;accent-color:#727b55}
+a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible {outline:2px solid #919e70;outline-offset:4px}
+/* Dark overlays retain readable text regardless of the archive's light shell. */
+.story-viewer-backdrop,.book-reader-backdrop,.modal-backdrop,.cmd-palette-modal {--text-main:#f8fafc;--text-muted:#b0b8c6;--text-dim:#9ba5b5;--bg-card:#201b29;color:#f8fafc;color-scheme:dark}
+[data-theme="sepia"] {--text-main:#40392c;--text-muted:#6f6451;--text-dim:#786e5b;color:#40392c;color-scheme:light}
+[data-theme="sepia"] .viewer-title,[data-theme="sepia"] .reader-chap-title,[data-theme="sepia"] .reader-main-title,[data-theme="sepia"] .toc-book-title,[data-theme="sepia"] .toc-item-title,[data-theme="sepia"] .drawer-title,[data-theme="sepia"] .reader-title {color:#40392c}
+[data-theme="sepia"] .viewer-tool-btn,[data-theme="sepia"] .viewer-close-btn,[data-theme="sepia"] .viewer-fullscreen-btn,[data-theme="sepia"] .reader-toc-toggle-btn,[data-theme="sepia"] .font-btn {color:#5b513f}
+@media(max-width:600px){.site-header .header-inner{gap:12px}.logo-text-group h1{font-size:18px}.hero-banner{padding:24px 18px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+.book-reader-backdrop[data-theme="sepia"],.story-viewer-backdrop[data-theme="sepia"] {background:#f7f3e9}
+.book-reader-backdrop[data-theme="sepia"] .reader-top-bar,.story-viewer-backdrop[data-theme="sepia"] .viewer-top-bar {background:#ede9dd;border-color:#d5cebd}
+.book-reader-backdrop[data-theme="sepia"] .reader-toc-sidebar,.story-viewer-backdrop[data-theme="sepia"] .viewer-drawer-panel {background:#efebdf;border-color:#d5cebd;color:#40392c}
+.book-reader-backdrop[data-theme="sepia"] .reader-body-paragraphs,.story-viewer-backdrop[data-theme="sepia"] .reader-body,.book-reader-backdrop[data-theme="sepia"] .reader-main-title {color:#40392c}
+[data-theme="sepia"] .toc-item-btn.active {background:#dedfca!important;border-color:#9ba280!important}
+[data-theme="sepia"] .chapter-nav-btn,[data-theme="sepia"] .nav-chapter-btn,[data-theme="sepia"] .drawer-close-btn,[data-theme="sepia"] .toc-close-mobile-btn,[data-theme="sepia"] .viewer-toggle-btn {color:#40392c;background:#e3dfd2}
+::-webkit-scrollbar-track {background:#e5e5da} ::-webkit-scrollbar-thumb {background:#a5ad95}
+[data-theme="sepia"] .reader-book-badge,[data-theme="sepia"] .reader-chap-badge,[data-theme="sepia"] .toc-item-num,[data-theme="sepia"] .toc-badge,[data-theme="sepia"] .chap-tag-pill {color:#676c46}
+[data-theme="sepia"] #artSummaryBox,[data-theme="sepia"] #artGuideBox {background:#e9e8da;border-color:#d2d5bd;color:#4f563f}
+[data-theme="sepia"] #artSummaryBox *,[data-theme="sepia"] #artGuideBox * {color:inherit}
