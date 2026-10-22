@@ -236,6 +236,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function setupEventListeners() {
+    const setStoryView = view => {
+      document.getElementById('storyGrid').classList.toggle('list-view', view === 'list');
+      document.getElementById('viewGallery').setAttribute('aria-pressed', view !== 'list');
+      document.getElementById('viewList').setAttribute('aria-pressed', view === 'list');
+      storage.setItem('story_view', view);
+    };
+    setStoryView(storage.getItem('story_view') || 'gallery');
+    document.getElementById('viewGallery').addEventListener('click', () => setStoryView('gallery'));
+    document.getElementById('viewList').addEventListener('click', () => setStoryView('list'));
+
     document.getElementById('savedBooksOnly')?.addEventListener('change', renderBooksSection);
     window.addEventListener('pagehide', persistBookScroll);
     // Mode Switcher Buttons
@@ -493,23 +503,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update Hero Banner
     if (mode === 'story') {
-      heroTitle.textContent = '다카하시 신지 이야기 · 237편 완역';
-      heroSubtitle.textContent = '5개 장으로 완성된 신지의 일대기와 영적 진리, 그리고 237편 요약 만화 카드와 번역 전문을 제공합니다.';
+      heroTitle.textContent = '다카하시 신지';
+      heroSubtitle.textContent = '이야기를 읽고, 책을 펼치고, 목소리를 듣는 공간.';
       totalCountEl.textContent = '237';
       subStat1.textContent = '5개 장 체계';
       subStat2.textContent = '237편 만화 요약 & 번역 전문 1:1';
       searchInput.placeholder = '이야기 번호, 제목, 키워드 검색...';
     } else if (mode === 'book') {
-      heroTitle.textContent = '다카하시 신지 정법 도서관 · 3대 서적 및 완역 대전집';
-      heroSubtitle.textContent = '56강 완역 『강연록 대전집』(616쪽), 10대 핵심 『강연집』(191쪽), 최후 유고 『신·부활』(74쪽) 전편을 프리미엄 전자책으로 제공합니다.';
+      heroTitle.textContent = '책을 펼치다';
+      heroSubtitle.textContent = '강연록 대전집, 강연집, 신·부활. 세 권의 책에서 이어지는 사유.';
       totalCountEl.textContent = `${activeBooks.length}`;
       subStat1.textContent = '대전집 56항목 · 강연집 11항목 · 신·부활 13항목 (총 80항목)';
-      subStat2.textContent = '프리미엄 2열 스플릿 전자책 뷰어';
+      subStat2.textContent = '목차 · 본문 검색 · 책갈피';
       searchInput.placeholder = '서적 챕터, 강연 제목, 신리 키워드 검색...';
       renderBooksSection();
     } else {
-      heroTitle.textContent = '다카하시 신지 강연 동영상 & 음원 아카이브';
-      heroSubtitle.textContent = '노래, DVD 강연 시리즈(01~18), CD 음성 강연 등 47편의 귀중한 육성 기록을 타임스탬프 목차와 함께 감상하세요.';
+      heroTitle.textContent = '목소리로 만나다';
+      heroSubtitle.textContent = '47개의 영상과 음원. 회차를 선택하고 제공된 목차를 따라 들어보세요.';
       totalCountEl.textContent = '47';
       subStat1.textContent = '노래 · DVD · CD 전편';
       subStat2.textContent = '초단위 타임스탬프 목차 지원';
@@ -575,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="spotlight-desc">${currentBook.description}</p>
             <div class="spotlight-cta-row">
               <button class="btn-read-start" id="btnSpotlightReadStart">
-                <span>📖 1장부터 전자책으로 정주행</span>
+                <span>처음부터 읽기 →</span>
               </button>
             </div>
           </div>
@@ -642,6 +652,9 @@ document.addEventListener('DOMContentLoaded', () => {
     card.className = 'book-chapter-card';
     card.dataset.bookId = book.id;
     card.dataset.chapIndex = index;
+    card.tabIndex = 0; card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', chap.title);
+    card.addEventListener('keydown', e => { if (e.target === card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openBookReader(book.id, index); } });
 
     const tagsHtml = (chap.tags || []).map(t => `<span class="chap-tag-pill">#${t}</span>`).join('');
 
@@ -912,7 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bookReaderModal.setAttribute('data-theme', theme);
     }
     if (bookThemeLabel) {
-      const labels = { cinema: '시네마', oled: 'OLED', sepia: '세피아' };
+      const labels = { cinema: '저녁', oled: '어둡게', sepia: '종이' };
       bookThemeLabel.textContent = labels[theme] || '시네마';
     }
   }
@@ -1073,6 +1086,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const card = document.createElement('div');
     card.className = `story-card chap-${story.chapter}`;
     card.dataset.id = story.id;
+    card.tabIndex = 0; card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', story.title);
+    card.addEventListener('keydown', e => { if (e.target === card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openStoryModal(story); } });
 
     const isBookmarked = bookmarkedIds.includes(story.id);
     const storyNumStr = story.num || String(story.id).padStart(3, '0');
@@ -1081,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     card.innerHTML = `
       <div class="story-card-thumb-wrap">
-        <img src="${thumbUrl}" alt="${escapeHtml(story.title)}" loading="lazy" decoding="async" onerror="this.src='${fullUrl}'">
+        <img src="${thumbUrl}" alt="${escapeHtml(story.title)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fullUrl}'">
         <div class="story-card-badges">
           <span class="story-num-pill">${story.number}</span>
           <span class="story-chap-pill chap-${story.chapter}">제${story.chapter}장</span>
@@ -1096,9 +1112,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ${story.origTitle ? `<p class="story-card-orig-title">${story.origTitle}</p>` : ''}
         <p class="story-card-summary">${story.body ? story.body.substring(0, 95) + '...' : ''}</p>
         <div class="story-card-footer">
-          <span class="chap-card-time">⏱️ 3분 읽기</span>
+          <span class="chap-card-time">한국어 번역</span>
           <span class="story-card-read-btn">
-            <span>감상하기</span>
+            <span>읽기</span>
             <span>➔</span>
           </span>
         </div>
@@ -1298,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', () => {
       storyModalBackdrop.setAttribute('data-theme', theme);
     }
     if (themeLabel) {
-      const labels = { cinema: '시네마', oled: 'OLED', sepia: '세피아' };
+      const labels = { cinema: '저녁', oled: '어둡게', sepia: '종이' };
       themeLabel.textContent = labels[theme] || '시네마';
     }
   }
@@ -1380,12 +1396,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.id = item.id;
+    card.tabIndex = 0; card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', item.title);
+    card.addEventListener('keydown', e => { if (e.target === card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openVideoModal(item); } });
 
     const tagsHtml = (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('');
 
     card.innerHTML = `
       <div class="card-thumb-wrap">
-        <img class="card-thumb" src="${item.thumbnail}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" onerror="this.src='https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg'">
+        <img class="card-thumb" src="${item.thumbnail}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg'">
         <div class="play-overlay">
           <div class="play-circle">
             <div class="play-triangle"></div>

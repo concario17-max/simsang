@@ -16,9 +16,9 @@
   <!-- Google Fonts: Cinzel, Outfit, Noto Serif KR, Noto Sans KR -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/styles.css?v=4"><link rel="stylesheet" href="css/simsang.css?v=4">
+  <link rel="stylesheet" href="css/simsang.css?v=5">
 </head>
 <body>
 
@@ -30,10 +30,10 @@
   <header class="site-header">
     <div class="header-inner">
       <a href="../" class="brand-logo" id="brandLogo">
-        <div class="logo-icon">信</div>
+        <div class="logo-icon">心</div>
         <div class="logo-text-group">
           <h1>심상 서재</h1>
-          <p>전체 서재로 돌아가기 · 신지 자료실</p>
+          <p>전체 서재로 돌아가기</p>
         </div>
       </a>
 
@@ -41,15 +41,15 @@
       <nav class="main-mode-nav" aria-label="메인 뷰 모드">
         <button class="mode-nav-btn active" id="modeStoryBtn" data-mode="story">
           <span class="mode-icon">📖</span>
-          <span class="mode-label">신지 이야기 <small class="count-badge">237편</small></span>
+          <span class="mode-label">이야기 <small class="count-badge">237편</small></span>
         </button>
         <button class="mode-nav-btn" id="modeBookBtn" data-mode="book">
           <span class="mode-icon">📚</span>
-          <span class="mode-label">정법 도서관 <small class="count-badge">3권 (80편)</small></span>
+          <span class="mode-label">책 <small class="count-badge">3권 (80편)</small></span>
         </button>
         <button class="mode-nav-btn" id="modeVideoBtn" data-mode="video">
           <span class="mode-icon">🎬</span>
-          <span class="mode-label">강연 동영상 <small class="count-badge">47편</small></span>
+          <span class="mode-label">영상·음원 <small class="count-badge">47편</small></span>
         </button>
       </nav>
 
@@ -59,7 +59,7 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="text" id="searchInput" placeholder="이야기 번호, 제목, 키워드 검색...">
+          <input type="text" id="searchInput" aria-label="현재 자료에서 검색" placeholder="이야기 번호, 제목, 키워드 검색...">
           <button class="cmd-palette-trigger-btn" id="btnOpenCommandPalette" title="빠른 점프 커맨드 팔레트 (Ctrl + K)">
             <kbd>Ctrl+K</kbd>
           </button>
@@ -77,8 +77,8 @@
     <section class="hero-banner" id="heroBanner">
       <div class="hero-glow-mesh" aria-hidden="true"></div>
       <div class="hero-content">
-        <h2 id="heroTitle">다카하시 신지 이야기 · 237편 완역</h2>
-        <p id="heroSubtitle">5개 장으로 완성된 신지의 일대기와 영적 진리, 그리고 237편 요약 만화 카드와 번역 전문을 제공합니다.</p>
+        <p class="archive-eyebrow">심상 서재 / 저자 자료실</p><h2 id="heroTitle">다카하시 신지</h2>
+        <p id="heroSubtitle">이야기를 읽고, 책을 펼치고, 목소리를 듣는 공간.</p>
         <div class="stats-pills" id="heroStats">
           <span class="stat-pill">전체 <strong id="totalCount">237</strong>개 항목</span>
           <span class="stat-pill" id="subStat1">5개 장 체계</span>
@@ -89,9 +89,9 @@
         <div class="continue-reading-banner" id="continueReadingBanner" style="display: none;">
           <div class="continue-content">
             <span class="continue-icon">🔖</span>
-            <span class="continue-text">이전에 읽던 <strong id="continueStoryTitle">#001 이야기</strong>부터 이어서 감상하시겠습니까?</span>
+            <span class="continue-text">이전에 읽던 <strong id="continueStoryTitle">#001 이야기</strong> · 이어 읽기</span>
           </div>
-          <button class="continue-btn" id="btnContinueStory">이어서 보기 ➔</button>
+          <button class="continue-btn" id="btnContinueStory">계속 읽기 →</button>
         </div>
       </div>
     </section>
@@ -151,6 +151,7 @@
       </div>
 
 
+      <div class="collection-toolbar"><h3>이야기 <span>237편의 기록</span></h3><div class="view-options" aria-label="이야기 표시 방식"><button id="viewGallery" aria-pressed="true">이미지</button><button id="viewList" aria-pressed="false">목록</button></div></div>
       <!-- Story Cards Feed Grid -->
       <div class="story-grid" id="storyGrid">
         <!-- Dynamically rendered via js/app.js -->
@@ -229,7 +230,7 @@
   <!-- ======================================================== -->
   <!-- IMMERSIVE FULLSCREEN COMIC & TRANSLATION VIEWER          -->
   <!-- ======================================================== -->
-  <div class="story-viewer-backdrop" id="storyModalBackdrop" role="dialog" aria-modal="true" data-theme="cinema">
+  <div class="story-viewer-backdrop" id="storyModalBackdrop" role="dialog" aria-modal="true" data-theme="sepia">
     
     <!-- Top Floating Header -->
     <header class="viewer-top-bar">
@@ -248,9 +249,9 @@
         </button>
 
         <!-- Theme Switcher Button -->
-        <button class="viewer-tool-btn" id="btnThemeSelector" title="독서 테마 전환 (시네마 / OLED / 세피아)">
+        <button class="viewer-tool-btn" id="btnThemeSelector" title="독서 테마 전환 (저녁 / 어둡게 / 종이)">
           <span class="btn-theme-icon">🎨</span>
-          <span class="btn-tool-label" id="themeLabel">시네마</span>
+          <span class="btn-tool-label" id="themeLabel">종이</span>
         </button>
 
         <!-- Fullscreen F11 Toggle Button -->
@@ -271,7 +272,7 @@
         </button>
 
         <!-- Close Button -->
-        <button class="viewer-close-btn" id="storyModalCloseBtn" aria-label="닫기 (Esc)" title="닫기 (단축키: Esc)">&times;</button>
+        <button class="viewer-close-btn" id="storyModalCloseBtn" aria-label="닫기 (Esc)" title="닫기 (단축키: Esc)">목록으로</button>
       </div>
     </header>
 
@@ -303,7 +304,7 @@
       <aside class="viewer-drawer-panel" id="storyTextPanel">
         <div class="drawer-header">
           <div class="drawer-title-group">
-            <h4>📄 한국어 번역 전문</h4>
+            <h4>한국어 번역</h4>
             <p id="metaOrigTitle" class="drawer-orig-title"></p>
           </div>
           <button class="drawer-close-btn" id="btnCloseDrawer" title="번역창 접기">&times;</button>
@@ -339,7 +340,7 @@
 
           <!-- Notes -->
           <div class="commentary-section" id="storyCommentarySection" style="display: none;">
-            <h5 class="commentary-title">💡 해설 / 번역 메모</h5>
+            <h5 class="commentary-title">해설 / 번역 메모</h5>
             <div class="commentary-body" id="storyModalNotes"></div>
           </div>
         </div>
@@ -359,7 +360,7 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="cmdPaletteInput" placeholder="이야기 번호(1~237), 제목, 주제 빠른 점프..." autocomplete="off">
+        <input type="text" id="cmdPaletteInput" aria-label="전체 자료 빠른 검색" placeholder="이야기 번호(1~237), 제목, 주제 빠른 점프..." autocomplete="off">
         <kbd class="cmd-esc-kbd">ESC</kbd>
       </div>
       <div class="cmd-results-list" id="cmdResultsList">
@@ -385,7 +386,7 @@
         <!-- Left: YouTube Player -->
         <div class="modal-player-section">
           <div class="player-container">
-            <iframe id="playerFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe title="강연 영상 플레이어" id="playerFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <div class="modal-meta">
             <h3 id="modalTitle">강연 제목</h3>
@@ -416,7 +417,7 @@
   <!-- ======================================================== -->
   <!-- PREMIUM E-BOOK READER MODAL (2-COLUMN SPLIT TOC & CANVAS) -->
   <!-- ======================================================== -->
-  <div class="book-reader-backdrop" id="bookReaderModal" role="dialog" aria-modal="true" data-theme="cinema" style="display: none;">
+  <div class="book-reader-backdrop" id="bookReaderModal" role="dialog" aria-modal="true" data-theme="sepia" style="display: none;">
     
     <!-- Top Floating Reading Toolbar -->
     <header class="reader-top-bar">
@@ -447,9 +448,9 @@
         </button>
 
         <!-- Reading Theme Selector -->
-        <button class="viewer-tool-btn" id="btnBookThemeSelector" title="독서 테마 전환 (시네마 / OLED / 세피아)">
+        <button class="viewer-tool-btn" id="btnBookThemeSelector" title="독서 테마 전환 (저녁 / 어둡게 / 종이)">
           <span class="btn-theme-icon">🎨</span>
-          <span class="btn-tool-label" id="bookThemeLabel">시네마</span>
+          <span class="btn-tool-label" id="bookThemeLabel">종이</span>
         </button>
 
         <!-- Font Size Controls -->
@@ -475,7 +476,7 @@
         </button>
 
         <!-- Close Button -->
-        <button class="viewer-close-btn" id="bookReaderCloseBtn" aria-label="닫기 (Esc)" title="닫기 (단축키: Esc)">&times;</button>
+        <button class="viewer-close-btn" id="bookReaderCloseBtn" aria-label="닫기 (Esc)" title="닫기 (단축키: Esc)">목록으로</button>
       </div>
     </header>
 
@@ -547,7 +548,7 @@
               </div>
             </button>
             <button class="bottom-nav-btn list" id="btnBookOpenToc">
-              <span>📑 전체 목차</span>
+              <span>전체 목차</span>
             </button>
             <button class="bottom-nav-btn next" id="btnBookNextChapter">
               <div class="nav-btn-info">
@@ -573,15 +574,15 @@
 
   <!-- Footer -->
   <footer class="site-footer">
-    <div class="footer-brand">SHINJI TAKAHASHI ARCHIVE</div>
-    <p>© 2026 다카하시 신지(高橋信次) 이야기 237편 전편 번역 & 서적 도서관 & 강연 아카이브 · 정법의 보존과 공유</p>
+    <div class="footer-brand">심상 서재 · 다카하시 신지</div>
+    <p>이야기 237편 · 책 3권 · 영상과 음원 47개</p>
   </footer>
 
   <!-- Scripts -->
   <script src="js/books-data.js?v=4"></script>
   <script src="js/lectures-data.js?v=4"></script>
   <script src="js/stories-data.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>
 
