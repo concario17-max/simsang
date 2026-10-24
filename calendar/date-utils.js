@@ -1,51 +1,19 @@
-/**
- * Converts a local year/month/day triple into a UTC date-only timestamp.
- */
-export function toUtcDateOnly(y        , m        , d        )         {
-  return Date.UTC(y, m - 1, d);
+/** Calendar dates use a fixed 365-day reading cycle; Feb 29 repeats Feb 28. */
+export const toUtcDateOnly=(y,m,d)=>Date.UTC(y,m-1,d);
+export function getCycleStartUtc(date,startMonth=4,startDay=7){const y=date.getFullYear();return Date.UTC(y-(Date.UTC(y,date.getMonth(),date.getDate())<Date.UTC(y,startMonth-1,startDay)?1:0),startMonth-1,startDay)}
+export const inRange=n=>n>=0&&n<365;
+export function calcYaoNum(date){
+ const m=date.getMonth(),day=date.getDate();
+ if(Number.isNaN(date.getTime())||(m===3&&day>=2&&day<=6))return null;
+ const fixed=Date.UTC(2001,m,m===1&&day===29?28:day);
+ const start=Date.UTC(2001,3,7),days=((fixed-start)/86400000+365)%365;
+ return days<360?25+days:null;
 }
-
-/**
- * Returns the cycle start date for the given year, defaulting to April 7.
- */
-export function getCycleStartUtc(targetDate      , startMonth         = 4, startDay         = 7)         {
-  const y = targetDate.getFullYear();
-  const startThisYearUtc = toUtcDateOnly(y, startMonth, startDay);
-  const targetUtc = toUtcDateOnly(y, targetDate.getMonth() + 1, targetDate.getDate());
-
-  return targetUtc < startThisYearUtc
-    ? toUtcDateOnly(y - 1, startMonth, startDay)
-    : startThisYearUtc;
+export const calcGuaNum=n=>Number.isInteger(n)&&n>=1&&n<=384?Math.floor((n-1)/6)+1:null;
+/** Inverse for ordinary entries. Bonus 1–24 are selected separately on April 2. */
+export function dateForYao(n,year){
+ if(!Number.isInteger(n)||n<25||n>384)return null;
+ const d=new Date(Date.UTC(2001,3,7+n-25));
+ return `${year}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
 }
-
-/**
- * True when a zero-based day index is inside the 365-day cycle window.
- */
-export function inRange(dayIndex        )          {
-  return dayIndex >= 0 && dayIndex < 365;
-}
-
-/**
- * Maps a date into the 1-indexed yao sequence.
- * Valid dates run from April 7 to April 1 of the following year and map to 25..384.
- * April 2 through April 6 intentionally return null.
- */
-export function calcYaoNum(date      )                {
-  const startUtc = getCycleStartUtc(date, 4, 7);
-  const targetUtc = toUtcDateOnly(date.getFullYear(), date.getMonth() + 1, date.getDate());
-  const diffDays = Math.floor((targetUtc - startUtc) / 86400000);
-
-  if (diffDays >= 0 && diffDays < 360) {
-    return 25 + diffDays;
-  }
-
-  return null;
-}
-
-/**
- * Maps a yao number into a 1-indexed gua number.
- */
-export function calcGuaNum(yaoNum               )                {
-  if (yaoNum === null) return null;
-  return Math.floor((yaoNum - 1) / 6) + 1;
-}
+export function validDate(s){if(!/^\d{4}-\d{2}-\d{2}$/.test(s||'')||s<'1900-01-01'||s>'2199-12-31')return false;const d=new Date(s+'T12:00:00Z');return !isNaN(d)&&d.toISOString().slice(0,10)===s}

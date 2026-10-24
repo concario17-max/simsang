@@ -31,9 +31,9 @@ function translations(x){return Object.entries(x.texts).filter(([,v])=>textValue
 function empty(s){return '<p class="empty-reading">'+s+'</p>'}
 function go(id,push=true){const n=book.entries.findIndex(x=>x.id===id);if(n<0)return false;index=n;render(push);return true}
 function render(push=true){
- const x=book.entries[index];if(push)history.replaceState(null,'','?'+new URLSearchParams({book:slug,verse:x.id}));
+ const x=book.entries[index];if(push)Simsang.navigate('?'+new URLSearchParams({book:slug,verse:x.id}));
  save(prefix+'last',x.id);save('simsang-library-last',{book:slug,id:x.id,title:book.title,label:x.label});
- document.title=x.label+' · '+book.title+' · 심상 서재';$('#verseTitle').textContent=x.label;
+ Simsang.visit(book.title+' · '+x.label);document.title=x.label+' · '+book.title+' · 심상 서재';$('#verseTitle').textContent=x.label;
  $('#chapterSelect').value=x.chapter;$('#verseSelect').innerHTML=book.entries.filter(e=>e.chapter===x.chapter).map(e=>'<option value="'+esc(e.id)+'">'+esc(e.label)+'</option>').join('');$('#verseSelect').value=x.id;
  $('#availability').textContent=['본문',x.commentary&&x.commentary.length?'해설':null,x.comic?'만화':null,x.audio?'음원':null].filter(Boolean).join(' · ')+' 제공';
  $('#viewTabs').querySelectorAll('button').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);b.setAttribute('aria-pressed',String(b.dataset.view===view))});

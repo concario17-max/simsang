@@ -1,0 +1,7 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>검색과 책갈피 · 심상 서재</title><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="library.css"><link rel="stylesheet" href="../shared.css?v=1"><script src="../shared.js?v=1"></script></head><body>
+<header><a class="brand" href="../"><span class="seal">心</span><span>심상 서재<small>SIMSANG ARCHIVE</small></span></a><nav><a href="../#library">전체 서재</a><a href="../shinji/">신지 자료실</a></nav></header>
+<main id="mainContent" class="discovery"><p class="eyebrow">FIND · KEEP · RETURN</p><h1>다시 펼쳐볼 문장들</h1><p class="intro">서재 전체에서 찾고, 저장한 책갈피와 읽던 자료로 돌아가세요.</p>
+<div class="discovery-tabs" role="group" aria-label="보기 선택"><button data-tab="search">통합 검색</button><button data-tab="saved">내 책갈피</button><button data-tab="recent">최근 읽기</button></div>
+<form id="searchForm"><label for="scope">찾을 자료</label><select id="scope"><option value="all">전체 자료</option></select><label for="query">본문·해설·제목 검색</label><div class="query-row"><input id="query" type="search" placeholder="마음, 용서, 구절 번호…"><button class="primary" type="submit">찾기</button></div><p class="hint">검색할 때 선택한 자료의 색인을 불러옵니다. 모든 검색어가 포함된 항목을 찾아요.</p></form>
+<p id="status" role="status">자료 목록을 불러오고 있어요…</p><div id="results"></div><button id="more" hidden>결과 더 보기</button><p class="hint" id="storageNote" hidden>책갈피와 읽기 기록은 이 브라우저에 저장됩니다. 다른 기기와 자동으로 동기화되지 않아요.</p>
+</main><script type="module" src="library.js"></script></body></html>

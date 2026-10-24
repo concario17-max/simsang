@@ -13,10 +13,12 @@
  * 6. 🚀 60~120 FPS 극강의 부드러움을 위한 IntersectionObserver & Event Delegation 최적화
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const initialMode=location.hash.startsWith('#book')?'book':location.hash.startsWith('#video')?'video':'story';
+  try { await window.loadShinjiData(initialMode); } catch { document.getElementById('heroSubtitle').textContent='자료를 불러오지 못했어요. 새로고침해 다시 시도해주세요.'; return; }
   const storage = {
     getItem(key) { try { return window.localStorage.getItem('simsang-' + key); } catch { return null; } },
-    setItem(key, value) { try { window.localStorage.setItem('simsang-' + key, value); } catch {} }
+    setItem(key, value) { try { window.localStorage.setItem('simsang-' + key, value); return true; } catch { Simsang.warn(); return false; } }
   };
   function readArray(key) { try { const value = JSON.parse(storage.getItem(key) || '[]'); return Array.isArray(value) ? value : []; } catch { return []; } }
   let storySequence = [];
@@ -219,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // 4. Initialization
   // ==========================================
+  let modeRequest=0;
   init();
 
   function init() {
@@ -489,8 +492,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // 6. Mode Switching Logic
   // ==========================================
-  function switchMode(mode) {
-    if (currentMode === mode) return;
+  async function switchMode(mode) {
+    const request=++modeRequest;
+    try { const rows=await window.loadShinjiData(mode); if(request!==modeRequest)return false; if(mode==='story')activeStories=[...rows];if(mode==='book')activeBooks=[...rows];if(mode==='video')activeLectures=[...rows]; } catch { Simsang.announce('자료를 불러오지 못했어요. 메뉴를 다시 선택해주세요.'); return false; }
+    if (currentMode === mode) return true;
     currentMode = mode;
 
     modeStoryBtn.classList.toggle('active', mode === 'story');
@@ -530,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mode === 'video') updateVideosData();
     checkContinueReading();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    return true;
   }
 
   // ==========================================
@@ -723,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Deep link URL Hash
     if (history.replaceState) {
-      history.replaceState(null, '', `#book-${book.id}-${book.chapters[currentReadingChapterIndex].id}`);
+      Simsang.navigate(`#book-${book.id}-${book.chapters[currentReadingChapterIndex].id}`);Simsang.visit('신지 도서 · '+document.getElementById('artChapterTitle').textContent);
     }
   }
 
@@ -846,7 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bookReadingProgressBar.style.width = '0%';
     }
 
-    history.replaceState(null, '', `#book-${currentReadingBook.id}-${chapter.id}`);
+    Simsang.navigate(`#book-${currentReadingBook.id}-${chapter.id}`);Simsang.visit('신지 도서 · '+document.getElementById('artChapterTitle').textContent);
 
     // Highlight active in sidebar
     renderBookTocItems();
@@ -869,7 +875,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.body.style.overflow = '';
     if (history.replaceState && window.location.hash.startsWith('#book-')) {
-      history.replaceState(null, '', window.location.pathname + window.location.search);
+      history.replaceState(null, '', window.location.pathname + window.location.search+'#books');
     }
   }
 
@@ -972,15 +978,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const chap = currentReadingBook.chapters[currentReadingChapterIndex];
     const itemKey = `${currentReadingBook.id}-${chap.id}`;
 
-    const exists = bookmarkedBookChapters.includes(itemKey);
-    if (exists) {
-      bookmarkedBookChapters = bookmarkedBookChapters.filter(k => k !== itemKey);
-      showToast('📖 보관함에서 제거되었습니다.');
-    } else {
-      bookmarkedBookChapters.push(itemKey);
-      showToast('⭐ 보관함에 저장되었습니다.');
-    }
-    storage.setItem('shinji_book_bookmarks', JSON.stringify(bookmarkedBookChapters));
+    const exists=bookmarkedBookChapters.includes(itemKey);
+    const next=exists?bookmarkedBookChapters.filter(k=>k!==itemKey):[...bookmarkedBookChapters,itemKey];
+    if(!storage.setItem('shinji_book_bookmarks',JSON.stringify(next)))return;
+    bookmarkedBookChapters=next;showToast(exists?'책갈피를 해제했어요.':'책갈피에 저장했어요.');
     updateBookBookmarkUI(chap);
   }
 
@@ -1136,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkContinueReading();
 
     if (history.replaceState) {
-      history.replaceState(null, '', `#story-${String(story.id).padStart(3, '0')}`);
+      Simsang.navigate(`#story-${String(story.id).padStart(3, '0')}`);Simsang.visit('신지 이야기 · '+story.title);
     }
   }
 
@@ -1183,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateStoryBookmarkButton(story.id);
     storage.setItem('shinji_last_story', String(story.id));
-    history.replaceState(null, '', `#story-${String(story.id).padStart(3, '0')}`);
+    Simsang.navigate(`#story-${String(story.id).padStart(3, '0')}`);Simsang.visit('신지 이야기 · '+story.title);
     checkContinueReading();
     storyPrevBtn.disabled = currentStoryIndex <= 0;
     storyNextBtn.disabled = currentStoryIndex >= storySequence.length - 1;
@@ -1260,14 +1261,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   function toggleBookmark(storyId) {
     const idx = bookmarkedIds.indexOf(storyId);
-    if (idx !== -1) {
-      bookmarkedIds.splice(idx, 1);
-      showToast('보관함에서 제거되었습니다.');
-    } else {
-      bookmarkedIds.push(storyId);
-      showToast('⭐ 보관함에 추가되었습니다.');
-    }
-    storage.setItem('shinji_bookmarks', JSON.stringify(bookmarkedIds));
+    const next=idx!==-1?bookmarkedIds.filter(id=>id!==storyId):[...bookmarkedIds,storyId];
+    if(!storage.setItem('shinji_bookmarks',JSON.stringify(next)))return;
+    bookmarkedIds=next;showToast(idx!==-1?'책갈피를 해제했어요.':'책갈피에 저장했어요.');
     updateBookmarkCountPill();
     if (currentMode === 'story' && storyChapter === 'bookmark') {
       updateStoriesData();
@@ -1452,7 +1448,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     transcriptText.innerHTML = `
       <p style="margin-bottom: 12px; font-weight: 500;">${item.summary}</p>
-      <p style="color: var(--text-dim); font-size: 0.82rem;">* 상세 강의록 및 한글 번역 대본은 상단 '정법 도서관' 56강 완역 대전집 텍스트를 통해 확인하실 수 있습니다.</p>
+      <p style="color: var(--text-dim); font-size: 0.82rem;">관련 서적은 책 메뉴에서 읽을 수 있습니다. 영상과 책의 개별 장 사이 대응 관계는 확인 중입니다.</p>
     `;
 
     videoModalBackdrop.classList.add('active');
@@ -1463,7 +1459,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkContinueReading();
 
     if (history.replaceState) {
-      history.replaceState(null, '', `#video-${item.id}`);
+      Simsang.navigate(`#video-${item.id}`);Simsang.visit('신지 영상 · '+item.title);
     }
   }
 
@@ -1472,7 +1468,7 @@ document.addEventListener('DOMContentLoaded', () => {
     playerFrame.src = '';
     document.body.style.overflow = '';
     if (history.replaceState && window.location.hash.startsWith('#video-')) {
-      history.replaceState(null, '', window.location.pathname + window.location.search);
+      history.replaceState(null, '', window.location.pathname + window.location.search+'#videos');
     }
   }
 
@@ -1535,7 +1531,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return cmdIndexCache;
   }
 
-  function openCommandPalette() {
+  async function openCommandPalette() {
+    try { const rows=await Promise.all(['story','book','video'].map(window.loadShinjiData)); activeStories=rows[0];activeBooks=rows[1];activeLectures=rows[2]; } catch { Simsang.announce('검색 자료를 불러오지 못했어요. 다시 시도해주세요.');return; }
     if (!cmdPaletteModal) return;
     cmdPaletteModal.classList.add('active');
     cmdPaletteInput.value = '';
@@ -1741,11 +1738,11 @@ document.addEventListener('DOMContentLoaded', () => {
     continueReadingBanner.style.display = 'none';
   }
 
-  function checkUrlHash() {
+  async function checkUrlHash() {
     const hash = window.location.hash;
     if (!hash) return;
-    if (hash === '#books') { switchMode('book'); return; }
-    if (hash === '#videos') { switchMode('video'); return; }
+    if (hash === '#books') { await switchMode('book'); return; }
+    if (hash === '#videos') { await switchMode('video'); return; }
 
     // 1. Story Deep Link: #story-001
     const storyMatch = hash.match(/^#story-(\d+)$/i);
@@ -1767,7 +1764,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const book = activeBooks.find(b => b.id === bId);
       if (book) {
         const chIdx = book.chapters.findIndex(c => c.id === chId);
-        switchMode('book');
+        await switchMode('book');
         openBookReader(bId, chIdx !== -1 ? chIdx : 0);
         return;
       }
@@ -1779,7 +1776,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const vidId = parseInt(videoMatch[1], 10);
       const video = (typeof LECTURE_DATA !== 'undefined' ? LECTURE_DATA : []).find(v => v.id === vidId);
       if (video) {
-        switchMode('video');
+        await switchMode('video');
         openVideoModal(video);
         return;
       }
