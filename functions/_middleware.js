@@ -1,6 +1,6 @@
 const encoder = new TextEncoder();
 const COOKIE = '__Host-simsang-entry';
-const DAYS = 30 * 86400;
+const DAYS = 365 * 86400;
 const escape = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const headers = {'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Robots-Tag':'noindex, nofollow'};
 async function mac(secret, text) {
@@ -13,8 +13,12 @@ export function destination(value, origin) {
 }
 function page(next, message='', status=200) {
  const nonce=crypto.randomUUID();
- const html=`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>입장 · 심상 서재</title><style>*{box-sizing:border-box}body{margin:0;min-height:100svh;display:grid;place-items:center;background:#f3f0e8;color:#292d25;font-family:system-ui,sans-serif;padding:24px}main{width:min(100%,420px)}.seal{font:48px serif;color:#69714d}small{letter-spacing:.18em;color:#69714d}h1{font-size:32px;margin:18px 0}p{line-height:1.8;color:#62665a}label{display:block;margin:30px 0 10px}input,button{width:100%;min-height:52px;border-radius:8px;font:inherit}input{padding:12px;border:1px solid #8d9380;background:#fff}button{margin-top:14px;border:0;background:#4e593d;color:white;cursor:pointer}:focus-visible{outline:3px solid #9a6231;outline-offset:4px}.note{font-size:13px}.error{color:#923d32}</style><main><div class="seal" aria-hidden="true">心</div><small>SIMSANG ARCHIVE</small><h1>심상 서재에 오신 것을<br>환영합니다.</h1><p>입장코드를 입력하고<br>마음에 남는 문장을 만나보세요.</p>${message?`<p role="alert" class="error">${escape(message)}</p>`:''}<form method="post" action="/__entry"><input type="hidden" name="next" value="${escape(next)}"><label for="code">입장코드</label><input id="code" name="code" type="password" inputmode="numeric" autocomplete="current-password" maxlength="128" required autofocus><button type="submit">서재 들어가기</button></form><p class="note">이 브라우저에서 30일 동안 입장이 유지됩니다.</p></main><script nonce="${nonce}">document.querySelector('form').addEventListener('submit',()=>{const field=document.querySelector('[name=next]');if(location.hash&&!field.value.includes('#'))field.value+=location.hash;});</script></html>`;
+ const html=`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>입장 · 심상 서재</title><style>*{box-sizing:border-box}body{margin:0;min-height:100svh;display:grid;place-items:center;background:#f3f0e8;color:#292d25;font-family:system-ui,sans-serif;padding:24px}main{width:min(100%,420px)}.seal{font:48px serif;color:#69714d}small{letter-spacing:.18em;color:#69714d}h1{font-size:32px;margin:18px 0}p{line-height:1.8;color:#62665a}label{display:block;margin:30px 0 10px}input,button{width:100%;min-height:52px;border-radius:8px;font:inherit}input{padding:12px;border:1px solid #8d9380;background:#fff}button{margin-top:14px;border:0;background:#4e593d;color:white;cursor:pointer}:focus-visible{outline:3px solid #9a6231;outline-offset:4px}.note{font-size:13px}.error{color:#923d32}</style><main><div class="seal" aria-hidden="true">心</div><small>SIMSANG ARCHIVE</small><h1>심상 서재에 오신 것을<br>환영합니다.</h1><p>입장코드를 입력하고<br>마음에 남는 문장을 만나보세요.</p>${message?`<p role="alert" class="error">${escape(message)}</p>`:''}<form method="post" action="/__entry"><input type="hidden" name="next" value="${escape(next)}"><label for="code">입장코드</label><input id="code" name="code" type="password" inputmode="numeric" autocomplete="current-password" maxlength="128" required autofocus><button type="submit">서재 들어가기</button></form><p class="note">이 브라우저에서 1년 동안 입장이 유지되며, 방문할 때마다 자동 연장됩니다.</p></main><script nonce="${nonce}">document.querySelector('form').addEventListener('submit',()=>{const field=document.querySelector('[name=next]');if(location.hash&&!field.value.includes('#'))field.value+=location.hash;});</script></html>`;
  return new Response(html,{status,headers:{...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':`default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`}});
+}
+async function sessionCookie(signingKey, origin, now) {
+ const exp=String(now+DAYS),signed=await mac(signingKey,origin+':'+exp);
+ return `${COOKIE}=${exp}.${signed}; Path=/; Max-Age=${DAYS}; HttpOnly; Secure; SameSite=Lax`;
 }
 export async function onRequest({request,env,next}) {
  const url=new URL(request.url);
@@ -42,8 +46,7 @@ export async function onRequest({request,env,next}) {
    if(attempts.count>=5)return page(target,'입력 횟수를 초과했어요. 15분 후 다시 시도해주세요.',429);
    const correct=equal(await mac(signingKey,form.get('code')||''),await mac(signingKey,env.ACCESS_CODE));
    if(!correct){await env.ACCESS_ATTEMPTS.put(bucket,JSON.stringify({...attempts,count:attempts.count+1}),{expirationTtl:900});return page(target,'입장코드가 맞지 않습니다.',401);}
-   const exp=String(now+DAYS),signed=await mac(signingKey,url.origin+':'+exp);
-   return new Response(null,{status:303,headers:{...headers,Location:target,'Set-Cookie':`${COOKIE}=${exp}.${signed}; Path=/; Max-Age=${DAYS}; HttpOnly; Secure; SameSite=Lax`}});
+   return new Response(null,{status:303,headers:{...headers,Location:target,'Set-Cookie':await sessionCookie(signingKey,url.origin,now)}});
   } catch {return new Response('입장 확인을 잠시 사용할 수 없습니다. 잠시 후 다시 시도해주세요.',{status:503,headers});}
  }
  if(!authenticated) {
@@ -55,5 +58,6 @@ export async function onRequest({request,env,next}) {
  const response=new Response(original.body,original);
  for(const [key,value] of Object.entries(headers))response.headers.set(key,value);
  response.headers.append('Vary','Cookie');
+ response.headers.append('Set-Cookie',await sessionCookie(signingKey,url.origin,now));
  return response;
 }
