@@ -1,10 +1,10 @@
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
-const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch{Simsang.warn();return false}};
 const params=new URLSearchParams(location.search),allowed=['gita','lamp','Thodol','rosi','miracle','3body'];
 const slug=params.get('book'),prefix='simsang-book-'+slug+'-';
-let book,index=0,zoom=100,view=read(prefix+'view','text'),marks=read(prefix+'bookmarks',[]);
+let book,index=0,zoom=100,view=params.get('view')||(params.has('find')?'text':read(prefix+'view','text')),marks=read(prefix+'bookmarks',[]);
 if(!Array.isArray(marks))marks=[];
 if(!['text','commentary','comic','note','albums'].includes(view))view='text';
 const initialLast=read(prefix+'last',null);
@@ -31,6 +31,7 @@ function translations(x){return Object.entries(x.texts).filter(([,v])=>textValue
 function empty(s){return '<p class="empty-reading">'+s+'</p>'}
 function go(id,push=true){const n=book.entries.findIndex(x=>x.id===id);if(n<0)return false;index=n;render(push);return true}
 function render(push=true){
+ marks=Simsang.array(prefix+'bookmarks');
  const x=book.entries[index];if(push)Simsang.navigate('?'+new URLSearchParams({book:slug,verse:x.id}));
  save(prefix+'last',x.id);save('simsang-library-last',{book:slug,id:x.id,title:book.title,label:x.label});
  Simsang.visit(book.title+' · '+x.label);document.title=x.label+' · '+book.title+' · 심상 서재';$('#verseTitle').textContent=x.label;
@@ -46,16 +47,18 @@ function render(push=true){
  }
  if(view==='note'){
   $('#content').innerHTML='<label for="note">오늘의 문장이 남긴 것</label><textarea id="note" placeholder="마음에 남은 문장을 적어보세요."></textarea><p id="noteStatus" role="status">이 브라우저에 자동 저장돼요.</p>';
-  $('#note').value=read(prefix+'note-'+x.id,'');$('#note').oninput=()=>{$('#noteStatus').textContent=save(prefix+'note-'+x.id,$('#note').value)?'저장했어요.':'저장 공간을 사용할 수 없어요. 내용을 복사해 보관해주세요.'};
+  Simsang.bindNote($('#note'),prefix+'note-'+x.id,$('#noteStatus'));
  }
  if(view==='albums')$('#content').innerHTML=book.albums.map(a=>'<section class="album"><div class="album-top"><img loading="lazy" src="'+esc(a.coverImage)+'" alt="'+esc(a.title)+' 표지"><div><h3>'+esc(a.title)+'</h3><p>'+esc(a.description||'')+'</p></div></div>'+a.tracks.map(t=>'<div class="track"><small>'+esc(t.title)+'</small><audio controls preload="none" src="'+esc(t.url)+'"></audio></div>').join('')+'</section>').join('');
+ Simsang.readingRendered(view);
 }
 function resultButton(x){return '<button data-id="'+esc(x.id)+'">'+esc(book.chapters.find(c=>c.id===x.chapter)?.title+' · '+x.label)+'</button>'}
 $('#chapterSelect').onchange=e=>go(book.entries.find(x=>x.chapter===e.target.value).id);$('#verseSelect').onchange=e=>go(e.target.value);
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b&&book){view=b.dataset.view;save(prefix+'view',view);render()}};
 $('#prev').onclick=()=>{if(index>0)go(book.entries[index-1].id)};$('#next').onclick=()=>{if(index+1<book.entries.length)go(book.entries[index+1].id)};
 $('#resume').onclick=()=>{if(book)go(initialLast||book.entries[0].id)};
-$('#bookmark').onclick=()=>{if(!book)return;const id=book.entries[index].id;const next=marks.includes(id)?marks.filter(x=>x!==id):[...marks,id];if(save(prefix+'bookmarks',next)){marks=next;render()}else alert('책갈피를 저장할 수 없어요.')};
+$('#bookmark').onclick=async()=>{if(!book)return;const result=await Simsang.toggle(prefix+'bookmarks',book.entries[index].id);if(result){marks=result.rows;render()}};
+window.addEventListener('storage',e=>{if(e.key===prefix+'bookmarks'){marks=Simsang.array(prefix+'bookmarks');if(book){$('#bookmark').textContent=marks.includes(book.entries[index].id)?'★ 저장됨':'☆ 책갈피';$('#bookmark').setAttribute('aria-pressed',String(marks.includes(book.entries[index].id)))}}});
 $('#search').oninput=()=>{if(!book)return;const q=$('#search').value.trim().toLowerCase();const hits=q?book.entries.filter(x=>[x.id,x.label,...Object.values(x.texts).map(textValue),typeof x.commentary==='string'?x.commentary:JSON.stringify(x.commentary)].join(' ').toLowerCase().includes(q)):[];$('#results').innerHTML=q?(hits.slice(0,100).map(resultButton).join('')||'<p>검색 결과가 없어요.</p>')+(hits.length>100?'<p>앞의 100개 결과를 표시했어요. 검색어를 더 구체적으로 입력해주세요.</p>':''):''};
 $('#results').onclick=e=>{const b=e.target.closest('[data-id]');if(b)go(b.dataset.id)};
 $('#saved').onclick=()=>{if(!book)return;$('#savedList').innerHTML=book.entries.filter(x=>marks.includes(x.id)).map(resultButton).join('')||'<p>아직 저장한 구절이 없어요.</p>';$('#savedDialog').showModal()};
@@ -66,5 +69,5 @@ try{
  if(!allowed.includes(slug))throw Error('unknown book');const r=await fetch('../data/books/'+slug+'.json');if(!r.ok)throw Error('load');book=await r.json();
  $('#bookTitle').textContent=book.title;$('#notice').textContent=book.notice;$('#sourceLink').href=book.source.repository+'/tree/'+book.source.commit;
  $('#chapterSelect').innerHTML=book.chapters.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.title)+'</option>').join('');$('#albumTab').hidden=!book.albums.length;if(view==='albums'&&!book.albums.length)view='text';
- $('#loading').hidden=true;$('#layout').hidden=false;if(!go(params.get('verse')||initialLast))go(book.entries[0].id);
+ $('#loading').hidden=true;$('#layout').hidden=false;const term=params.get('find')?.split(/\s+/)[0].toLowerCase(),entry=book.entries.find(x=>x.id===params.get('verse'));if(term&&entry&&!params.has('view')&&!JSON.stringify(entry.texts).toLowerCase().includes(term)&&JSON.stringify(entry.commentary).toLowerCase().includes(term))view='commentary';if(!go(params.get('verse')||initialLast))go(book.entries[0].id);
 }catch{$('#loading').textContent='자료를 불러오지 못했어요. 전체 서재에서 문헌을 다시 선택해주세요.';$('#bookTitle').textContent='문헌 읽기'}

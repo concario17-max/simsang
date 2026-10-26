@@ -1,7 +1,8 @@
 import fs from 'node:fs';import vm from 'node:vm';import path from 'node:path';import {fileURLToPath} from 'node:url';import {dateForYao} from '../calendar/date-utils.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
-const write=(p,v)=>{fs.mkdirSync(path.dirname(path.join(root,p)),{recursive:true});fs.writeFileSync(path.join(root,p),JSON.stringify(v))};
+const check=process.argv.includes('--check');
+const write=(p,v)=>{if(check){if(fs.readFileSync(path.join(root,p),'utf8')!==JSON.stringify(v))throw Error('검색 자료 재생성 필요: '+p);return}fs.mkdirSync(path.dirname(path.join(root,p)),{recursive:true});fs.writeFileSync(path.join(root,p),JSON.stringify(v))};
 const text=v=>typeof v==='string'?v:Array.isArray(v)?v.map(text).join(' '):v&&typeof v==='object'?Object.values(v).map(text).join(' '):'';
 const metadata=[],groups=[];
 function group(id,label,rows){groups.push({id,label,file:`data/search/${id}.json`,count:rows.length});rows.forEach(({text,...row})=>metadata.push({...row,group:id,collection:label}));write(`data/search/${id}.json`,rows.map(r=>({id:r.id,text:r.text.toLocaleLowerCase()})))}

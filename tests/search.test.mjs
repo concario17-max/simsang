@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {score,order,highlight,snippet} from '../library/search-utils.js';
+test('exact lesson number ranks before incidental title matches',()=>{const rows=[{title:'347에 대한 이야기'},{title:'기적수업 347',token:'miracle.19.347'},{title:'기타'}];assert.equal(order(rows,'347')[0].token,'miracle.19.347');assert.equal(score(rows[2],'347'),0)});
+test('highlight escapes markup and treats regex punctuation literally',()=>{assert.equal(highlight('<script>x</script>','x'), '&lt;script&gt;<mark>x</mark>&lt;/script&gt;');assert.equal(highlight('1.1 and 1x1','1.1'),'<mark>1.1</mark> and 1x1');assert.equal(highlight('a+b [x]','[x]'),'a+b <mark>[x]</mark>')});
+test('snippets include matching text far into a paragraph',()=>{const text='a'.repeat(500)+'용서'+'b'.repeat(400);const s=snippet(text,'용서');assert.ok(s.startsWith('…'));assert.ok(s.includes('용서'));assert.ok(s.length<190)});

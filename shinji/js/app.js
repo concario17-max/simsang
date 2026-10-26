@@ -46,14 +46,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Story Viewer State
   let currentStoryIndex = 0;
   let isTranslationDrawerOpen = false;
-  let currentFontSizePercent = 100;
+  let currentFontSizePercent = Number(Simsang.read('simsang-reading-font',18));
   
   // Book Reader State
   let currentReadingBook = null;
   let currentReadingChapterIndex = 0;
   let isBookTocOpen = true;
   let bookReaderTheme = storage.getItem('shinji_book_theme') || 'sepia';
-  let bookFontSizePercent = parseInt(storage.getItem('shinji_book_font') || '100', 10);
+  let bookFontSizePercent = Number(Simsang.read('simsang-reading-font',18));
   let bookmarkedBookChapters = readArray('shinji_book_bookmarks');
 
   // Bookmarks & Preferences
@@ -716,6 +716,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Show Reader Modal
     bookReaderModal.style.display = 'flex';
+    Simsang.highlightReading(artParagraphsContainer);
     document.body.style.overflow = 'hidden';
 
     // Save last read info
@@ -937,9 +938,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function adjustBookFontSize(delta) {
-    const validSizes = [85, 95, 100, 110, 120, 130, 140];
+    const validSizes = [18, 20, 22, 24];
     let currentIdx = validSizes.indexOf(bookFontSizePercent);
-    if (currentIdx === -1) currentIdx = 2; // default 100
+    if (currentIdx === -1) currentIdx = 0; // default 100
 
     if (delta > 0 && currentIdx < validSizes.length - 1) {
       applyBookFontSize(validSizes[currentIdx + 1]);
@@ -949,13 +950,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function applyBookFontSize(size) {
+    if(![18,20,22,24].includes(size))size=18;
     bookFontSizePercent = size;
-    storage.setItem('shinji_book_font', size.toString());
+    if(!Simsang.write('simsang-reading-font',size))Simsang.warn();
     if (artParagraphsContainer) {
-      artParagraphsContainer.style.fontSize = `${(size / 100) * 1.15}rem`;
+      artParagraphsContainer.style.fontSize = `${size}px`;
     }
     if (bookFontIndicator) {
-      bookFontIndicator.textContent = `${size}%`;
+      bookFontIndicator.textContent = `${size}px`;
     }
   }
 
@@ -973,15 +975,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function toggleCurrentBookBookmark() {
+  async function toggleCurrentBookBookmark() {
     if (!currentReadingBook) return;
     const chap = currentReadingBook.chapters[currentReadingChapterIndex];
     const itemKey = `${currentReadingBook.id}-${chap.id}`;
 
-    const exists=bookmarkedBookChapters.includes(itemKey);
-    const next=exists?bookmarkedBookChapters.filter(k=>k!==itemKey):[...bookmarkedBookChapters,itemKey];
-    if(!storage.setItem('shinji_book_bookmarks',JSON.stringify(next)))return;
-    bookmarkedBookChapters=next;showToast(exists?'책갈피를 해제했어요.':'책갈피에 저장했어요.');
+    const result=await Simsang.toggle('simsang-shinji_book_bookmarks',itemKey);if(!result)return;bookmarkedBookChapters=result.rows;showToast(result.added?'책갈피에 저장했어요.':'책갈피를 해제했어요.');
     updateBookBookmarkUI(chap);
   }
 
@@ -1161,6 +1160,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (metaContentType) metaContentType.textContent = story.contentType || '-';
     if (storyModalBodyText) {
       storyModalBodyText.innerHTML = (story.paragraphs || [story.body]).map(p => `<p>${p}</p>`).join('');
+      adjustFontSize(0);
+      Simsang.highlightReading(storyModalBodyText);
     }
 
     if (storyModalNotes && storyCommentarySection) {
@@ -1220,9 +1221,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function adjustFontSize(delta) {
-    const validSizes = [85, 100, 115, 130];
+    const validSizes = [18, 20, 22, 24];
     let currentIdx = validSizes.indexOf(currentFontSizePercent);
-    if (currentIdx === -1) currentIdx = 1;
+    if (currentIdx === -1) currentIdx = 0;
 
     if (delta > 0 && currentIdx < validSizes.length - 1) {
       currentFontSizePercent = validSizes[currentIdx + 1];
@@ -1230,11 +1231,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentFontSizePercent = validSizes[currentIdx - 1];
     }
 
+    if(![18,20,22,24].includes(currentFontSizePercent))currentFontSizePercent=18;
+    if(!Simsang.write('simsang-reading-font',currentFontSizePercent))Simsang.warn();
     if (storyModalBodyText) {
-      storyModalBodyText.style.fontSize = `${currentFontSizePercent}%`;
+      storyModalBodyText.style.fontSize = `${currentFontSizePercent}px`;
     }
     if (fontIndicator) {
-      fontIndicator.textContent = `${currentFontSizePercent}%`;
+      fontIndicator.textContent = `${currentFontSizePercent}px`;
     }
   }
 
@@ -1259,11 +1262,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ==========================================
   // 10. Story Bookmarks & Themes
   // ==========================================
-  function toggleBookmark(storyId) {
-    const idx = bookmarkedIds.indexOf(storyId);
-    const next=idx!==-1?bookmarkedIds.filter(id=>id!==storyId):[...bookmarkedIds,storyId];
-    if(!storage.setItem('shinji_bookmarks',JSON.stringify(next)))return;
-    bookmarkedIds=next;showToast(idx!==-1?'책갈피를 해제했어요.':'책갈피에 저장했어요.');
+  window.addEventListener('storage',e=>{if(e.key==='simsang-shinji_bookmarks'){bookmarkedIds=readArray('shinji_bookmarks');updateBookmarkCountPill();if(currentMode==='story')updateStoriesData();}if(e.key==='simsang-shinji_book_bookmarks'){bookmarkedBookChapters=readArray('shinji_book_bookmarks');if(currentReadingBook)updateBookBookmarkUI(currentReadingBook.chapters[currentReadingChapterIndex]);}});
+  async function toggleBookmark(storyId) {
+    const result=await Simsang.toggle('simsang-shinji_bookmarks',storyId);if(!result)return;const idx=result.added?-1:0;bookmarkedIds=result.rows;showToast(result.added?'책갈피에 저장했어요.':'책갈피를 해제했어요.');
     updateBookmarkCountPill();
     if (currentMode === 'story' && storyChapter === 'bookmark') {
       updateStoriesData();

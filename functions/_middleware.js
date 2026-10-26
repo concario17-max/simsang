@@ -59,6 +59,8 @@ export async function onRequest({request,env,next}) {
  const original=await next();
  const response=new Response(original.body,original);
  for(const [key,value] of Object.entries(headers))response.headers.set(key,value);
+ // Browser may retain static bytes but must revalidate through this gate on every use.
+ if(/\.(?:js|css|json|webp|png|jpg|jpeg|svg|woff2)$/.test(url.pathname))response.headers.set('Cache-Control','private, no-cache, must-revalidate');
  response.headers.append('Vary','Cookie');
  response.headers.append('Set-Cookie',await sessionCookie(signingKey,url.origin,now));
  return response;
