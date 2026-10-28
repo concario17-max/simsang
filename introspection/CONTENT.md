@@ -1,0 +1,20 @@
+# 자기 성찰 — 네 원소의 특성
+
+현재 화만 공개되어 있습니다. 사용자 제공 확정 한국어 번역과 영문 DOCX의 항목 순서를 대조하여 긍정편 40개, 부정편 62개, 부정편 서론 1개를 수록했습니다. 한국어 원문 문단과 목록을 유지하며 별도 요약·해설을 만들지 않습니다.
+
+`data/books/introspection.json`의 항목 ID는 기록·검색·주소에 사용합니다. 제목을 변경해도 기존 ID를 바꾸지 않습니다. 화의 예: `fire.positive.001`, `fire.negative.016`, `fire.negative.intro`. 추후 풍·수·지는 air/water/earth 접두사를 사용하고 공개된 원소만 첫 화면에서 링크합니다.
+
+## 학습만화 추가
+
+이미지를 `assets/introspection/fire/negative/016/` 같은 경로에 추가한 뒤 해당 항목의 `comics`에 읽는 순서대로 넣습니다. 경로는 사이트 루트 기준으로 지정합니다.
+
+```json
+"comics": [
+  {"src": "/assets/introspection/fire/negative/016/01.webp", "alt": "첫 장의 실제 내용을 설명하는 대체 텍스트"},
+  {"src": "/assets/introspection/fire/negative/016/02.webp", "alt": "둘째 장의 실제 내용을 설명하는 대체 텍스트"}
+]
+```
+
+비어 있으면 만화 탭은 숨겨지고 준비 중 안내가 나옵니다. 추가하면 탭과 목차의 만화 필터에 자동 반영됩니다. 이미지는 세로로 표시되며 각 장을 눌러 확대합니다. 과거 문헌의 단일 `comic` 필드도 계속 지원합니다.
+
+내용 변경 후 `npm run build:discovery` 및 `npm run check`를 실행합니다. 새 항목을 추가할 때 한국어/영문 대응과 노트·백업 호환성도 확인합니다.

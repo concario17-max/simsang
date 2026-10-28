@@ -1,0 +1,1 @@
+export function comicPages(entry){const items=entry.comics?.length?entry.comics:entry.comic?[entry.comic]:[];return items.map(x=>typeof x==='string'?{src:x}:x).filter(x=>x&&typeof x.src==='string'&&x.src.trim());}

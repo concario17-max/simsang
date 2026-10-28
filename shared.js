@@ -13,9 +13,9 @@
  async function toggle(key,item,identity=x=>JSON.stringify(x)){
   return locked(()=>{const rows=array(key),id=identity(item),exists=rows.some(x=>identity(x)===id);const next=exists?rows.filter(x=>identity(x)!==id):[...rows,item];if(!write(key,next)){warn();return null}return {rows:next,added:!exists}});
  }
- const noteKey=k=>/^simsang-(?:book-(?:gita|lamp|Thodol|rosi|miracle|3body)-note-.+|yoga-note-.+|calendar-note:.+)$/.test(k);
+ const noteKey=k=>/^simsang-(?:book-(?:gita|lamp|Thodol|rosi|miracle|3body|introspection)-note-.+|yoga-note-.+|calendar-note:.+)$/.test(k);
  const conflictKey=k=>/^simsang-note-copy-[\w-]+$/.test(k);
- const markKey=k=>/^simsang-(?:book-(?:gita|lamp|Thodol|rosi|miracle|3body)-bookmarks|yoga-bookmarks|calendar-bookmarks|shinji_bookmarks|shinji_book_bookmarks)$/.test(k);
+ const markKey=k=>/^simsang-(?:book-(?:gita|lamp|Thodol|rosi|miracle|3body|introspection)-bookmarks|yoga-bookmarks|calendar-bookmarks|shinji_bookmarks|shinji_book_bookmarks)$/.test(k);
  const ownKey=k=>noteKey(k)||conflictKey(k)||markKey(k)||['simsang-recent','simsang-calendar-last','simsang-library-last','simsang-yoga-last','simsang-shinji_last_story','simsang-shinji_last_video','simsang-shinji_last_read_book'].includes(k);
  const copyKey=()=> 'simsang-note-copy-'+crypto.randomUUID();
  function snapshot(){const entries={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(ownKey(k)){const value=read(k,null);if(value!==null)entries[k]=value}}return {format:'simsang-records',version:1,createdAt:new Date().toISOString(),entries}}
@@ -32,7 +32,7 @@
     else if(v.some(x=>!(typeof x==='string'&&x.length<500||Number.isInteger(x)&&x>0)))throw Error('책갈피 값이 올바르지 않습니다.');
    }else if(k==='simsang-recent'){if(!Array.isArray(v)||v.length>1000||v.some(x=>!x||!safeURL(x.href)||typeof x.title!=='string'||!Number.isFinite(x.at)))throw Error('읽기 기록이 올바르지 않습니다.');}
    else if(k==='simsang-calendar-last'){if(!v||!/^\d{4}-\d{2}-\d{2}$/.test(v.date)||!['yao','gua','soul'].includes(v.source)||!Number.isInteger(v.num)||v.num<1||v.num>384)throw Error('달력 기록이 올바르지 않습니다.');}
-   else if(k==='simsang-library-last'){if(!v||!['gita','lamp','Thodol','rosi','miracle','3body'].includes(v.book)||typeof v.id!=='string'||typeof v.title!=='string')throw Error('문헌 기록이 올바르지 않습니다.');}
+   else if(k==='simsang-library-last'){if(!v||!['gita','lamp','Thodol','rosi','miracle','3body','introspection'].includes(v.book)||typeof v.id!=='string'||typeof v.title!=='string')throw Error('문헌 기록이 올바르지 않습니다.');}
    else if(k==='simsang-shinji_last_read_book'){if(!v||typeof v.bookId!=='string'||typeof v.chapterTitle!=='string')throw Error('도서 기록이 올바르지 않습니다.');}
    else if(k==='simsang-yoga-last'){if(typeof v!=='string'||!/^\d+\.\d+$/.test(v))throw Error('요가 기록이 올바르지 않습니다.');}
    else if(!Number.isInteger(v)||v<1)throw Error('읽기 번호가 올바르지 않습니다.');

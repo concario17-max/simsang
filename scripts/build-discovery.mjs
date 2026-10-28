@@ -14,7 +14,7 @@ for(const source of ['yao','gua'])for(const bonus of [false,true])for(const [n,b
 }
 cal.soul.forEach((s,i)=>{const r=s.ranges[0].start;rows.push({id:`calendar:soul:${i}`,title:s.weeksLabel,href:`calendar/?date=2001-${String(r.m).padStart(2,'0')}-${String(r.d).padStart(2,'0')}&source=soul`,text:text(s.sections)})});group('calendar','영성 달력',rows);
 group('yoga','요가수트라',read('data/yoga.json').map(e=>({id:'yoga:'+e.id,title:e.id+' · '+(e.commentary[0]?.title||'요가수트라'),href:'yoga/?verse='+e.id,key:'simsang-yoga-bookmarks',token:e.id,text:text(Object.fromEntries(Object.entries(e).filter(([k])=>!['audio','comic'].includes(k))))})));
-for(const slug of ['gita','lamp','Thodol','rosi','miracle','3body']){const b=read('data/books/'+slug+'.json');group(slug,b.title,b.entries.map(e=>({id:slug+':'+e.id,title:e.label,href:'reader/?'+new URLSearchParams({book:slug,verse:e.id}),key:'simsang-book-'+slug+'-bookmarks',token:e.id,text:e.id+' '+e.label+' '+text(e.texts)+' '+text(e.commentary)})))}
+for(const slug of ['gita','lamp','Thodol','rosi','miracle','3body','introspection']){const b=read('data/books/'+slug+'.json');group(slug,b.title,b.entries.map(e=>({id:slug+':'+e.id,title:e.label,href:'reader/?'+new URLSearchParams({book:slug,verse:e.id}),key:'simsang-book-'+slug+'-bookmarks',token:e.id,text:e.id+' '+e.label+' '+text(e.texts)+' '+text(e.commentary)})))}
 const data=(file,name)=>{const c=vm.createContext({});return vm.runInContext(fs.readFileSync(path.join(root,'shinji/js/'+file),'utf8')+'\n'+name,c)};
 const stories=data('stories-data.js','STORIES_DATA'),books=data('books-data.js','BOOKS_DATA'),videos=data('lectures-data.js','LECTURE_DATA');
 group('shinji','다카하시 신지',[
