@@ -9,6 +9,52 @@ let book,index=0,zoom=100,view=params.get('view')||(params.has('find')?'text':re
 if(!Array.isArray(marks))marks=[];
 if(!['text','commentary','comic','note','albums'].includes(view))view='text';
 const initialLast=read(prefix+'last',null);
+
+const bodyPane = $('#content');
+const controls = document.createElement('div');
+controls.className = 'reading-preferences';
+controls.innerHTML = '<label>글자 크기 <select id="readingSize"><option value="">기본</option><option value="20">크게</option><option value="24">아주 크게</option></select></label> <label>본문 배경 <select id="readingTone"><option value="">기본</option><option value="warm">종이빛</option><option value="night">야간</option></select></label> <button type="button" id="returnParagraph" hidden>읽던 문단으로</button>';
+bodyPane.before(controls);
+const style = document.createElement('style');
+style.textContent = '.reading-preferences{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin:1rem 0}.reading-preferences select{font:inherit;padding:.35em}#content[data-size] .prose :is(p,li,dd,blockquote){font-size:var(--reader-size)!important}#content[data-tone] .prose{padding:1rem;border-radius:.6rem}#content[data-tone="night"] .prose{background:#22252b;color:#eee}#content[data-tone="warm"] .prose{background:#f6efdf;color:#382f25}#content[data-tone] .prose :is(p,li,dd,dt,h3,blockquote,summary){color:inherit}';
+document.head.append(style);
+const size = $('#readingSize'), tone = $('#readingTone'), resumeParagraph = $('#returnParagraph');
+function applyPreferences() {
+  bodyPane.toggleAttribute('data-size', !!size.value);
+  bodyPane.style.setProperty('--reader-size', size.value + 'px');
+  if (tone.value) bodyPane.dataset.tone = tone.value;
+  else delete bodyPane.dataset.tone;
+}
+size.value = read('simsang-reader-size', '');
+tone.value = read('simsang-reader-tone', '');
+applyPreferences();
+controls.addEventListener('change', () => {
+  applyPreferences();
+  save('simsang-reader-size', size.value);
+  save('simsang-reader-tone', tone.value);
+});
+function paragraphKey() { return prefix + 'paragraph-' + view; }
+function paragraphs() { return [...bodyPane.querySelectorAll('.prose p,.prose li,.prose dd,.prose blockquote')].filter(node => node.getClientRects().length); }
+function rememberParagraph() {
+  if (!book || !['text','commentary'].includes(view)) return;
+  const nodes = paragraphs();
+  const line = innerHeight * .33;
+  const indexOnPage = nodes.findIndex(node => node.getBoundingClientRect().bottom >= line);
+  if (indexOnPage < 0 || nodes[indexOnPage].getBoundingClientRect().top > line + 50) return;
+  save(paragraphKey(), {entry:book.entries[index].id, paragraph:indexOnPage});
+}
+function showParagraphLink() {
+  const point = read(paragraphKey(), null);
+  resumeParagraph.hidden = !(point && point.entry === book.entries[index].id && Number.isInteger(point.paragraph) && point.paragraph >= 0);
+  resumeParagraph.onclick = () => paragraphs()[point.paragraph]?.scrollIntoView({block:'center'});
+}
+let savePositionTimer;
+addEventListener('scroll', () => {
+  clearTimeout(savePositionTimer);
+  savePositionTimer = setTimeout(rememberParagraph, 220);
+}, {passive:true});
+addEventListener('pagehide', rememberParagraph);
+
 const labels={sanskrit:'산스크리트 원문',tibetan:'티베트어 원문',german:'독일어 원문',iast:'로마자 표기',pronunciation:'발음',korean_pronunciation:'한글 발음',english:'영어',korean:'한국어',ai_translation:'AI 번역',translation_en:'영어 번역',translation_ham:'한국어 번역 · Ham',translation_gil:'한국어 번역 · Gil',translation_jimong:'한국어 번역 · Jimong',translation_suk:'한국어 번역 · Suk',translation_joongam:'중암 선혜 번역',translation_ryu:'류시화 번역'};
 const inline=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
 function markdown(s){
@@ -34,6 +80,8 @@ return Object.entries(x.texts).filter(([,v])=>textValue(v).trim()).map(([k,v])=>
 function empty(s){return '<p class="empty-reading">'+s+'</p>'}
 function go(id,push=true){const n=book.entries.findIndex(x=>x.id===id);if(n<0)return false;index=n;render(push);return true}
 function render(push=true){
+ clearTimeout(savePositionTimer);
+ showParagraphLink();
  marks=Simsang.array(prefix+'bookmarks');
  const x=book.entries[index],pages=comicPages(x);
  if(book.reflection){if((view==='comic'&&!pages.length)||view==='commentary')view='text';$('#viewTabs [data-view=commentary]').hidden=true;$('#viewTabs [data-view=comic]').hidden=!pages.length;}
