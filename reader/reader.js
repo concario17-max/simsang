@@ -74,9 +74,27 @@ function markdown(s){
 }
 function commentary(c){if(typeof c==='string')return markdown(c);return (c||[]).map(b=>(b.title?'<h3>'+esc(b.title)+'</h3>':'')+(b.paragraphs||[]).map(p=>'<p>'+esc(p)+'</p>').join('')+(b.bullets?'<ul>'+b.bullets.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ul>':'')+(b.table?'<div class="table-scroll"><table><thead><tr>'+b.table.headers.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+b.table.rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>':'')).join('')}
 function textValue(v){if(typeof v==='string')return v;if(Array.isArray(v))return v.map(x=>typeof x==='string'?x:[x.translator,x.text].filter(Boolean).join('\n')).join('\n\n');return ''}
+
+function glossaryText(value, words) {
+ const meanings = new Map(words.map(w => [w.s || w.word, w.m || w.meaning]));
+ return value.split(/(\s+)/u).map(token => {
+   const meaning = meanings.get(token);
+   if (!meaning) return esc(token);
+   return '<button type="button" class="glossary-term" title="'+esc(meaning)+'" aria-expanded="false">'+esc(token)+'</button><span class="glossary-meaning" hidden> ('+esc(meaning)+')</span>';
+ }).join('');
+}
+bodyPane.addEventListener('click', event => {
+ const term = event.target.closest('.glossary-term');
+ if (!term) return;
+ const meaning = term.nextElementSibling;
+ meaning.hidden = !meaning.hidden;
+ term.setAttribute('aria-expanded', String(!meaning.hidden));
+});
+style.textContent += '.translation button.glossary-term{display:inline;font:inherit;color:inherit;background:transparent;border:0;border-bottom:1px dotted currentColor;padding:0;cursor:pointer}.glossary-meaning{font-weight:600}';
+
 function translations(x){
  if(book.reflection)return '<section class="translation"><small>'+ (x.appendix?'번역 검토 부록':'한국어 번역')+'</small>'+markdown(x.texts.korean)+'</section>'+(x.texts.english?'<details class="original-text"><summary>영문 원문 보기</summary><section class="translation" lang="en"><h3>'+esc(x.englishTitle||'Introduction')+'</h3>'+markdown(x.texts.english)+'</section></details>':'');
-return Object.entries(x.texts).filter(([,v])=>textValue(v).trim()).map(([k,v])=>'<section class="translation"><small>'+esc(labels[k]||k)+'</small><p'+(k==='tibetan'?' lang="bo"':k==='sanskrit'?' lang="sa"':k==='german'?' lang="de"':'')+'>'+esc(textValue(v))+'</p></section>').join('')}
+return Object.entries(x.texts).filter(([,v])=>textValue(v).trim()).map(([k,v])=>'<section class="translation"><small>'+esc(labels[k]||k)+'</small><p'+(k==='tibetan'?' lang="bo"':k==='sanskrit'?' lang="sa"':k==='german'?' lang="de"':'')+'>'+(slug==='gita' && k==='iast' ? glossaryText(textValue(v), x.words) : esc(textValue(v)))+'</p></section>').join('')}
 function empty(s){return '<p class="empty-reading">'+s+'</p>'}
 function go(id,push=true){const n=book.entries.findIndex(x=>x.id===id);if(n<0)return false;index=n;render(push);return true}
 function render(push=true){
