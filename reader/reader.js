@@ -97,6 +97,46 @@ function translations(x){
 return Object.entries(x.texts).filter(([,v])=>textValue(v).trim()).map(([k,v])=>'<section class="translation"><small>'+esc(labels[k]||k)+'</small><p'+(k==='tibetan'?' lang="bo"':k==='sanskrit'?' lang="sa"':k==='german'?' lang="de"':'')+'>'+(slug==='gita' && k==='iast' ? glossaryText(textValue(v), x.words) : esc(textValue(v)))+'</p></section>').join('')}
 function empty(s){return '<p class="empty-reading">'+s+'</p>'}
 function go(id,push=true){const n=book.entries.findIndex(x=>x.id===id);if(n<0)return false;index=n;render(push);return true}
+const relatedPassages = [
+  {
+    "verses": [
+      [
+        "gita",
+        "6.32",
+        "바가바드 기타 제6장 32절"
+      ],
+      [
+        "lamp",
+        "bodhi.2.5",
+        "보리도등론 제5송"
+      ]
+    ],
+    "why": "《기타》는 남의 기쁨과 괴로움을 자신에게 비추어 보는 요긴을 묘사하고, 《보리도등론》은 타인의 고통까지 사라지기를 바라는 사람을 묘사해요."
+  },
+  {
+    "verses": [
+      [
+        "gita",
+        "6.26",
+        "바가바드 기타 제6장 26절"
+      ],
+      [
+        "lamp",
+        "bodhi.2.40",
+        "보리도등론 제40송"
+      ]
+    ],
+    "why": "《기타》는 마음이 흩어졌을 때 어디로 되돌릴지를, 《보리도등론》은 정한 대상 하나에 어떻게 머물지를 이야기해요."
+  }
+];
+function renderRelatedPassages(entryId) {
+ for (const {verses, why} of relatedPassages) {
+   if (!verses.some(([book, id]) => book === slug && id === entryId)) continue;
+   const [book, verse, label] = verses.find(([book]) => book !== slug);
+   const query = new URLSearchParams({book, verse, view:'text'});
+   bodyPane.insertAdjacentHTML('beforeend', '<aside aria-label="함께 읽는 구절"><h3>함께 읽는 구절</h3><p>'+esc(why)+'</p><a href="?'+esc(query.toString())+'">'+esc(label)+' 읽기 ↗</a></aside>');
+ }
+}
 function render(push=true){
  clearTimeout(savePositionTimer);
  showParagraphLink();
@@ -123,6 +163,7 @@ function render(push=true){
   Simsang.bindNote($('#note'),prefix+'note-'+x.id,$('#noteStatus'));
  }
  if(view==='albums')$('#content').innerHTML=book.albums.map(a=>'<section class="album"><div class="album-top"><img loading="lazy" src="'+esc(a.coverImage)+'" alt="'+esc(a.title)+' 표지"><div><h3>'+esc(a.title)+'</h3><p>'+esc(a.description||'')+'</p></div></div>'+a.tracks.map(t=>'<div class="track"><small>'+esc(t.title)+'</small><audio controls preload="none" src="'+esc(t.url)+'"></audio></div>').join('')+'</section>').join('');
+ if (view === 'text') renderRelatedPassages(x.id);
  Simsang.readingRendered(view);
 }
 function resultButton(x){return '<button data-id="'+esc(x.id)+'">'+esc(book.chapters.find(c=>c.id===x.chapter)?.title+' · '+x.label)+'</button>'}
