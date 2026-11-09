@@ -1,0 +1,660 @@
+{
+  "checkedAt": "2026-11-09",
+  "baseCommit": "291a9b446d60d92f18df015fee290892a2177ca8",
+  "scope": "491 quality entries: normalized English paragraph correspondence; 42 provisional records: source wording and page references. Not a full semantic certification of Korean translations.",
+  "documents": [
+    {
+      "file": "NA_374-454.pdf",
+      "sha256": "65737c9cafdf473b1aaaba6793390243bb1437609cbbb9e4fb6be5af94b8e6cb",
+      "pdfPages": 81,
+      "firstPrintedPage": 373,
+      "lastPrintedPage": 453,
+      "blankPdfPages": []
+    },
+    {
+      "file": "NE_561-679.pdf",
+      "sha256": "791ce4b56f7f9dd5c206c6bc9452e62095d94451c324c8d16608299de5e67ec9",
+      "pdfPages": 119,
+      "firstPrintedPage": 560,
+      "lastPrintedPage": 678,
+      "blankPdfPages": []
+    },
+    {
+      "file": "NF_294-373.pdf",
+      "sha256": "4188f36ecd49914ffe78eb529c1233d42b8161416001a6f3a42d4e7b8e92b4ba",
+      "pdfPages": 80,
+      "firstPrintedPage": 293,
+      "lastPrintedPage": 372,
+      "blankPdfPages": []
+    },
+    {
+      "file": "NW_455-560.pdf",
+      "sha256": "b0ae0a71da2c8524912550f69e91e3757859ac339f97eae984df998bac4b992a",
+      "pdfPages": 106,
+      "firstPrintedPage": 454,
+      "lastPrintedPage": 559,
+      "blankPdfPages": []
+    },
+    {
+      "file": "PA_96-167.pdf",
+      "sha256": "63edfd56c0e01bb93a693d5b92d414dc0578ee346f7f98d2ccbb769b988363b1",
+      "pdfPages": 72,
+      "firstPrintedPage": 95,
+      "lastPrintedPage": 166,
+      "blankPdfPages": []
+    },
+    {
+      "file": "PE_210-289.pdf",
+      "sha256": "6c428b57b2c4b6a9d338ca581494549e80047cb788dee1f0b3b902403ca21633",
+      "pdfPages": 80,
+      "firstPrintedPage": 209,
+      "lastPrintedPage": 287,
+      "blankPdfPages": [
+        80
+      ]
+    },
+    {
+      "file": "PF_42-95.pdf",
+      "sha256": "08fb27e1c0f242270dce865dd43f93d0f1cf7d938f9a81b55fedaa21d913e70c",
+      "pdfPages": 54,
+      "firstPrintedPage": 41,
+      "lastPrintedPage": 94,
+      "blankPdfPages": []
+    },
+    {
+      "file": "PW_168-209.pdf",
+      "sha256": "97774888b4614e706d48ded46ab1f5065cec1925f16be85fcb142edc82faa7c2",
+      "pdfPages": 42,
+      "firstPrintedPage": 167,
+      "lastPrintedPage": 208,
+      "blankPdfPages": []
+    }
+  ],
+  "provisionalReviews": [
+    {
+      "id": "fire.positive.002",
+      "review": 1,
+      "pdf": "PF_42-95.pdf",
+      "pdfPages": [
+        4
+      ],
+      "printedPages": [
+        44
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "해당 판본의 용어 해설 또는 대응 원어를 확인해야 합니다."
+    },
+    {
+      "id": "fire.positive.004",
+      "review": 2,
+      "pdf": "PF_42-95.pdf",
+      "pdfPages": [
+        6
+      ],
+      "printedPages": [
+        46
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "행위와 잘못의 대비가 불명확합니다. 타 판본의 동일 문장 대조가 필요합니다."
+    },
+    {
+      "id": "fire.positive.013",
+      "review": 3,
+      "pdf": "PF_42-95.pdf",
+      "pdfPages": [
+        18
+      ],
+      "printedPages": [
+        58
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "원문의 주차 누락인지 의도적 생략인지는 확인되지 않았습니다."
+    },
+    {
+      "id": "fire.positive.019",
+      "review": 4,
+      "pdf": "PF_42-95.pdf",
+      "pdfPages": [
+        28
+      ],
+      "printedPages": [
+        68
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "자립 부족만으로 주권 상실을 설명했을 가능성도 있어 오류라고 단정할 수 없습니다."
+    },
+    {
+      "id": "fire.positive.034",
+      "review": 5,
+      "pdf": "PF_42-95.pdf",
+      "pdfPages": [
+        46,
+        47
+      ],
+      "printedPages": [
+        86,
+        87
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "쉼표와 부사구의 연결이 모호합니다. 강조·반복을 피하라는 문맥은 있으나 원문 구문을 확정하지 못했습니다."
+    },
+    {
+      "id": "fire.negative.005",
+      "review": 6,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        6
+      ],
+      "printedPages": [
+        298
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "관능성과 동물적 수준을 설명하는 문맥과의 연결이 약합니다. 오자 여부를 확인해야 합니다."
+    },
+    {
+      "id": "fire.negative.006",
+      "review": 7,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        7,
+        8
+      ],
+      "printedPages": [
+        299,
+        300
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "이기적인 이유로 평화를 바란다는 앞뒤 문맥과 충돌하지만 의도적인 역설인지 오자인지 미확정입니다."
+    },
+    {
+      "id": "fire.negative.009",
+      "review": 8,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        13
+      ],
+      "printedPages": [
+        305
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "누가 대가를 지불하거나 되갚는지 명료하지 않습니다. 번역의 문법적 개선을 원문의 해소로 보아서는 안 됩니다."
+    },
+    {
+      "id": "fire.negative.011",
+      "review": 9,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        16,
+        17
+      ],
+      "printedPages": [
+        308,
+        309
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "병기가 의도적 동격인지 편집상의 혼동인지 별도 판본 확인이 필요합니다."
+    },
+    {
+      "id": "fire.negative.011",
+      "review": 10,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        17
+      ],
+      "printedPages": [
+        309
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "분노하는 사람이 밟은 쪽인지 밟힌 쪽인지 영어 문장이 명료하지 않습니다."
+    },
+    {
+      "id": "fire.negative.014",
+      "review": 11,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        21,
+        22
+      ],
+      "printedPages": [
+        313,
+        314
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "부정직을 알아보는 교육일 수도 있으나, 뒤의 진실함과 겸양이라는 대조와 충돌하여 대조가 필요합니다."
+    },
+    {
+      "id": "fire.negative.015",
+      "review": 12,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        23
+      ],
+      "printedPages": [
+        315
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "독립적으로 판단하는 직업을 의도했을 가능성은 있으나 이를 본문에 확정해 넣을 근거는 부족합니다."
+    },
+    {
+      "id": "fire.negative.053",
+      "review": 13,
+      "pdf": "NF_294-373.pdf",
+      "pdfPages": [
+        68
+      ],
+      "printedPages": [
+        360
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "무절제한·억제되지 않은 등의 의미로 단정하지 않았습니다. 대응 원어 확인이 필요합니다."
+    },
+    {
+      "id": "air.positive.001",
+      "review": 1,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        1,
+        2
+      ],
+      "printedPages": [
+        95,
+        96
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "To understand로 시작하는 구절이 완결되지 않아, 이해하지 못한다는 부정은 문맥을 반영한 해석입니다."
+    },
+    {
+      "id": "air.positive.004",
+      "review": 2,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        4,
+        5
+      ],
+      "printedPages": [
+        98,
+        99
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "that are the result가 어느 성품까지 수식하는지, 성공 자체를 뜻하려 했는지 명확하지 않습니다."
+    },
+    {
+      "id": "air.positive.007",
+      "review": 3,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        10
+      ],
+      "printedPages": [
+        104
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "That he receives로 시작하는 불완전한 문장이 앞 문장과 어떤 관계인지 확정하기 어렵습니다."
+    },
+    {
+      "id": "air.positive.014",
+      "review": 4,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        19
+      ],
+      "printedPages": [
+        113
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "which will never leave us가 진보를 가리키는지, 균형과 합리성 또는 그 표시를 가리키는지 모호합니다."
+    },
+    {
+      "id": "air.positive.028",
+      "review": 5,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        36
+      ],
+      "printedPages": [
+        130
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "앞 문장의 다른 사람들과 뒤 문장의 영적 인도자가 같은 존재인지, 배후에서 작용하는 별개 존재인지 명확하지 않습니다."
+    },
+    {
+      "id": "air.positive.032",
+      "review": 6,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        41,
+        42
+      ],
+      "printedPages": [
+        135,
+        136
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "원문은 anything that fundamentally rejects라고 되어 있어 거부하는 주체와 이중 부정의 구조가 어긋납니다. 현재 번역에는 문맥에 따른 구문 해석이 들어 있습니다."
+    },
+    {
+      "id": "air.positive.036",
+      "review": 7,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        46
+      ],
+      "printedPages": [
+        140
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "then our temporary task is the obstacles라는 구문이 불완전합니다. 현재 번역의 자신에게 주어진다는 표현은 문맥을 이어 주는 해석입니다."
+    },
+    {
+      "id": "air.positive.042",
+      "review": 8,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        53
+      ],
+      "printedPages": [
+        147
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "grandeur와 hunger의 결합이 부자연스러워, 과대욕과 갈망이라는 의미 범위를 저자의 의도로 확정할 수는 없습니다."
+    },
+    {
+      "id": "air.positive.055",
+      "review": 9,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        68
+      ],
+      "printedPages": [
+        162
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "must not interfere with는 통상 방해해서는 안 된다는 방향으로도 읽힙니다. 현재의 뒤얽힘은 뒤 문맥을 고려한 선택입니다."
+    },
+    {
+      "id": "air.positive.057",
+      "review": 10,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        70,
+        71
+      ],
+      "printedPages": [
+        164,
+        165
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "부정적 성품과 반대로 행동하는 것이 예속의 원인을 만든다는 서술은 주변 문맥과 충돌합니다. 번역에서 인과를 뒤집어 고치지 않았습니다."
+    },
+    {
+      "id": "air.positive.058",
+      "review": 11,
+      "pdf": "PA_96-167.pdf",
+      "pdfPages": [
+        72
+      ],
+      "printedPages": [
+        166
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "대명사와 관계절의 문법이 불완전합니다. 앞에 놓였다는 의미는 문맥상 추정입니다."
+    },
+    {
+      "id": "air.negative.002",
+      "review": 12,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        3
+      ],
+      "printedPages": [
+        375
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "이 문법적 연결은 직전의 유익한 기억에 대한 설명과 어색하게 이어집니다. 원문이 대비 대상을 잘못 적었는지는 확인되지 않았습니다."
+    },
+    {
+      "id": "air.negative.004",
+      "review": 13,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        5,
+        6
+      ],
+      "printedPages": [
+        377,
+        378
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "he, this person, they가 번갈아 쓰여 누구에게 상처를 입혔거나 누가 상처받았는지 확정하기 어렵습니다."
+    },
+    {
+      "id": "air.negative.012",
+      "review": 14,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        16
+      ],
+      "printedPages": [
+        388
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "원문에는 전치사나 완전한 절이 없습니다. 한가한 시간인지 나태함 자체를 말하는지 단정하기 어렵습니다."
+    },
+    {
+      "id": "air.negative.019",
+      "review": 15,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        25
+      ],
+      "printedPages": [
+        397
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "that we’re only capable as its children는 문법적으로 완결되지 않았습니다. 신뢰를 품을 능력이라는 연결은 문맥 해석입니다."
+    },
+    {
+      "id": "air.negative.024",
+      "review": 16,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        30
+      ],
+      "printedPages": [
+        402
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "앞 문단은 생명을 위태롭게 할 수 있다고 말합니다. 두 설명 사이의 관계가 분명하지 않아 부정을 임의로 삭제하지 않았습니다."
+    },
+    {
+      "id": "air.negative.028",
+      "review": 17,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        35
+      ],
+      "printedPages": [
+        407
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "문장 끝 yourself의 역할과 뒤의 역지사지 예시가 매끄럽게 이어지지 않습니다. 통상적인 황금률 문구로 대체하지 않았습니다."
+    },
+    {
+      "id": "air.negative.029",
+      "review": 18,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        35
+      ],
+      "printedPages": [
+        407
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "their sloppy work가 그 사람의 일인지 동료들의 일인지 불분명하므로, 번역에서는 부실한 일의 소유 주체를 특정하지 않았습니다."
+    },
+    {
+      "id": "air.negative.029",
+      "review": 19,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        35,
+        36
+      ],
+      "printedPages": [
+        407,
+        408
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "of가 경고의 대상인지 출처인지, astral이 구체적으로 무엇을 가리키는지 명확하지 않습니다."
+    },
+    {
+      "id": "air.negative.032",
+      "review": 20,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        38
+      ],
+      "printedPages": [
+        410
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "숙주, 다른 사람, 희생자의 관계와 he, it, which의 지칭이 불명확합니다. 제삼자가 따로 있는지도 확정하기 어렵습니다."
+    },
+    {
+      "id": "air.negative.042",
+      "review": 21,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        50
+      ],
+      "printedPages": [
+        422
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "i.e. 뒤의 열거가 앞의 진실에 대한 앎과 문법적으로 잘 연결되지 않아, 무엇인지 안다는 설명은 문맥을 반영한 보완입니다."
+    },
+    {
+      "id": "air.negative.046",
+      "review": 22,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        54
+      ],
+      "printedPages": [
+        426
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "generations의 일반적인 뜻은 세대입니다. 현재 번역은 문맥상 선택이며 체코어 원문의 어휘를 확인한 것은 아닙니다. 관련된 부정편 문단 848의 이후의 생들 역시 같은 선택입니다."
+    },
+    {
+      "id": "air.negative.049",
+      "review": 23,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        57
+      ],
+      "printedPages": [
+        429
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "상대에게 평판을 잃을 수 있다는 두려움이 공명심을 깨운다는 뜻인지, 실제로 그 결과가 생긴다는 뜻인지 문맥이 명료하지 않습니다."
+    },
+    {
+      "id": "air.negative.051",
+      "review": 24,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        59
+      ],
+      "printedPages": [
+        431
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "turn objects into thoughts와 along with other objects가 집중 훈련의 설명에서 어떤 의미인지 명확하지 않습니다."
+    },
+    {
+      "id": "air.negative.059",
+      "review": 25,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        69
+      ],
+      "printedPages": [
+        441
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "누가 누구에게 혜택을 요구하는지와 higher states의 의미가 명확하지 않습니다. 세금 감면·급여 등의 예시도 주체 해석을 어렵게 합니다."
+    },
+    {
+      "id": "air.negative.060",
+      "review": 26,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        70
+      ],
+      "printedPages": [
+        442
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "일관성 없음과 무의미함이 생각·감정·행위를 꾸미려던 표현인지, 각각 독립된 항목인지 불분명합니다."
+    },
+    {
+      "id": "air.negative.065",
+      "review": 27,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        75
+      ],
+      "printedPages": [
+        447
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "자신의 잘못을 정당화하는 예시라는 문맥과 어색하게 연결됩니다. 동료 탓을 한다는 의미로 원문의 전치사 관계를 바꾸지 않았습니다."
+    },
+    {
+      "id": "air.negative.066",
+      "review": 28,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        76
+      ],
+      "printedPages": [
+        448
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "benefit에는 이익을 얻는다는 뜻이 있어 원문 문맥과 긴장됩니다. 현재 번역은 그 긍정적 의미를 중립적인 되돌아옴으로 완화한 선택입니다."
+    },
+    {
+      "id": "air.negative.068",
+      "review": 29,
+      "pdf": "NA_374-454.pdf",
+      "pdfPages": [
+        80
+      ],
+      "printedPages": [
+        452
+      ],
+      "decision": "retain-provisional-translation",
+      "reason": "분노한 상대가 위협하는 문맥과 회한의 연결이 어색합니다. 다른 영어 단어의 오기라고 단정하여 바꾸지는 않았습니다."
+    }
+  ],
+  "corrections": [
+    {
+      "id": "earth.negative.079",
+      "language": "english",
+      "change": "Remove running header inserted at a PDF page break",
+      "pdf": "NE_561-679.pdf",
+      "pdfPages": [
+        108,
+        109
+      ],
+      "printedPages": [
+        667,
+        668
+      ]
+    }
+  ],
+  "notCovered": [
+    "fire.negative.intro: not present in the supplied eight PDF excerpts"
+  ]
+}

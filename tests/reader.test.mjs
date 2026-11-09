@@ -41,3 +41,13 @@ test('Earth numbering, bilingual text, ordered comics and review appendices are 
  assert.equal(b.entries.find(e=>e.id==='earth.positive.007').comics.length,0);
  assert.equal(b.entries.filter(e=>e.id.startsWith('earth.')&&e.appendix).length,2);
 });
+
+
+test('Earth 79 excludes the PDF running header while preserving the sentence and source record',()=>{
+ const b=JSON.parse(fs.readFileSync(new URL('../data/books/introspection.json',import.meta.url)));
+ const e=b.entries.find(e=>e.id==='earth.negative.079');
+ assert.ok(e.texts.english.includes('if the sister would marry a more distant relative of the same family.'));
+ assert.ok(!/Aid\s*for Introspection/i.test(e.texts.english));
+ const review=JSON.parse(fs.readFileSync(new URL('../data/sources/introspection-pdf-review.json',import.meta.url)));
+ assert.ok(review.corrections.some(c=>c.id===e.id&&c.pdf==='NE_561-679.pdf'&&c.printedPages.join(',')==='667,668'));
+});
