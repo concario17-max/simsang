@@ -78,7 +78,7 @@
   }
   if(document.querySelector('.main-mode-nav')){const a=document.createElement('a');a.className='archive-library-link';a.href=url('library/');a.textContent='검색 · 나의 서재';document.querySelector('.header-actions').append(a)}
   const main=document.querySelector('main');if(main){if(!main.id)main.id='mainContent';const a=document.createElement('a');a.className='skip-link';a.href='#'+main.id;a.textContent='본문으로 건너뛰기';document.body.prepend(a)}
-  if(/\/(reader|yoga)\//.test(location.pathname)){
+  if(/\/yoga\//.test(location.pathname)){
    const tools=document.querySelector('.reading-tools');const b=document.createElement('button');b.className='reading-font';b.textContent='글자 크기';b.setAttribute('aria-label','본문 글자 크기 변경');let size=Number(read('simsang-reading-font',18));if(![18,20,22,24].includes(size))size=18;
    const apply=()=>{document.documentElement.style.setProperty('--reading-font',size+'px');b.textContent='글자 '+size};apply();b.onclick=()=>{size=size===24?18:size+2;if(!write('simsang-reading-font',size))warn();apply()};tools?.append(b);
   }
