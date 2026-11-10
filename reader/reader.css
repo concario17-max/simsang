@@ -3,3 +3,13 @@
 .reflection-reader{--gold:#925d45}.original-text{margin:28px 0;border-top:1px solid var(--line);padding-top:20px}.original-text summary{cursor:pointer;font-size:16px;padding:12px 0}.comic-page{margin:20px 0}.comic-page button{width:100%}.comic-page img{display:block;max-width:100%;height:auto;margin:auto}.note-guidance{font-size:14px;color:var(--muted)}
 
 .prose blockquote{margin:1rem 0;padding:.25rem 1rem;border-inline-start:3px solid var(--line);background:var(--paper)}
+
+.reflection-reader #content .easy-reading h3{font-family:inherit;font-size:1.18em;font-weight:600;line-height:1.65;margin:2.3em 0 .8em;color:inherit;letter-spacing:-.025em}
+.reflection-reader #content .easy-reading h3:first-child{margin-top:.25em}
+.reflection-reader #content .easy-reading p{margin:.7em 0 1.15em;line-height:1.95}
+.reflection-reader #content .easy-reading table{font-size:.87em;line-height:1.75;margin:.7em 0}
+.reflection-reader #content .easy-reading th{text-align:left;background:color-mix(in srgb,currentColor 5%,transparent)}
+.reflection-reader #content .easy-reading td,.reflection-reader #content .easy-reading th{vertical-align:top;min-width:7em}
+.easy-reading-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:2rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+.reflection-reader .easy-reading-links button{font:inherit;font-size:14px;padding:10px 14px}
+@media(max-width:700px){.reflection-reader #viewTabs{gap:4px}.reflection-reader #viewTabs button{padding:10px 9px;min-height:44px}.reflection-reader #content .easy-reading h3{font-size:1.08em;margin-top:1.9em}.reflection-reader #content .easy-reading table{min-width:28rem}.reflection-reader #content .easy-reading td,.reflection-reader #content .easy-reading th{padding:9px;min-width:6em}}
