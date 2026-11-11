@@ -1,7 +1,7 @@
 import {comicPages} from './media.js';
 import {markdown} from './markdown.js';
 import {entryLabel,entryAliases,entryMatches,readerHref} from './entry-utils.js';
-import {hasEasyReading,resolveReadingView} from './reading-view.js';
+import {hasEasyReading,resolveReadingView,visibleCommentary} from './reading-view.js';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
@@ -132,7 +132,7 @@ function render(push=true){
  const x=book.entries[index],pages=comicPages(x);
  view=resolveReadingView(book,x,view,pages);
  showParagraphLink();
- if(book.reflection){$('#viewTabs [data-view=commentary]').hidden=!hasEasyReading(book,x);$('#viewTabs [data-view=comic]').hidden=!pages.length;}
+ if(book.reflection){$('#viewTabs [data-view=commentary]').hidden=!hasEasyReading(book,x);$('#viewTabs [data-view=comic]').hidden=!pages.length;$('#viewTabs').prepend($('#viewTabs [data-view='+ (pages.length?'comic':'commentary') +']'));}
  if(push)Simsang.navigate(readerHref(slug,x.id,view));
  save(prefix+'last',x.id);save('simsang-library-last',{book:slug,id:x.id,title:book.title,label:x.label});
  Simsang.visit(book.title+' · '+x.label);document.title=x.label+' · '+book.title+' · 심상 서재';$('#verseTitle').textContent=x.label;
@@ -164,8 +164,8 @@ $('#prev').onclick=()=>{if(index>0)go(book.entries[index-1].id)};$('#next').oncl
 $('#resume').onclick=()=>{if(book)go(initialLast||book.entries[0].id)};
 $('#bookmark').onclick=async()=>{if(!book)return;const result=await Simsang.toggle(prefix+'bookmarks',book.entries[index].id);if(result){marks=result.rows;render()}};
 window.addEventListener('storage',e=>{if(e.key===prefix+'bookmarks'){marks=Simsang.array(prefix+'bookmarks');if(book){$('#bookmark').textContent=marks.includes(book.entries[index].id)?'★ 저장됨':'☆ 책갈피';$('#bookmark').setAttribute('aria-pressed',String(marks.includes(book.entries[index].id)))}}});
-$('#search').oninput=()=>{if(!book)return;const q=$('#search').value.trim().toLowerCase();const hits=q?book.entries.filter(x=>[x.id,x.label,...entryAliases(slug,x),...Object.values(x.texts).map(textValue),typeof x.commentary==='string'?x.commentary:JSON.stringify(x.commentary)].join(' ').toLowerCase().includes(q)):[];$('#results').innerHTML=q?(hits.slice(0,100).map(resultButton).join('')||'<p>검색 결과가 없어요.</p>')+(hits.length>100?'<p>앞의 100개 결과를 표시했어요. 검색어를 더 구체적으로 입력해주세요.</p>':''):''};
-$('#results').onclick=e=>{const b=e.target.closest('[data-id]');if(b){const entry=book.entries.find(x=>x.id===b.dataset.id),term=$('#search').value.trim().toLowerCase();if(term&&entry&&!JSON.stringify(entry.texts).toLowerCase().includes(term)&&JSON.stringify(entry.commentary).toLowerCase().includes(term))view='commentary';go(b.dataset.id)}};
+$('#search').oninput=()=>{if(!book)return;const q=$('#search').value.trim().toLowerCase();const hits=q?book.entries.filter(x=>[x.id,x.label,...entryAliases(slug,x),...Object.values(x.texts).map(textValue),JSON.stringify(visibleCommentary(book,x)||'')].join(' ').toLowerCase().includes(q)):[];$('#results').innerHTML=q?(hits.slice(0,100).map(resultButton).join('')||'<p>검색 결과가 없어요.</p>')+(hits.length>100?'<p>앞의 100개 결과를 표시했어요. 검색어를 더 구체적으로 입력해주세요.</p>':''):''};
+$('#results').onclick=e=>{const b=e.target.closest('[data-id]');if(b){const entry=book.entries.find(x=>x.id===b.dataset.id),term=$('#search').value.trim().toLowerCase();if(term&&entry&&!JSON.stringify(entry.texts).toLowerCase().includes(term)&&JSON.stringify(visibleCommentary(book,entry)||'').toLowerCase().includes(term))view='commentary';go(b.dataset.id)}};
 $('#saved').onclick=()=>{if(!book)return;$('#savedList').innerHTML=book.entries.filter(x=>marks.includes(x.id)).map(resultButton).join('')||'<p>아직 저장한 구절이 없어요.</p>';$('#savedDialog').showModal()};
 $('#savedList').onclick=e=>{const b=e.target.closest('[data-id]');if(b){go(b.dataset.id);$('#savedDialog').close()}};
 $('#closeSaved').onclick=()=>$('#savedDialog').close();$('#closeImage').onclick=()=>$('#imageViewer').close();$('#zoomIn').onclick=()=>{$('#largeImage').style.width=(zoom=Math.min(300,zoom+25))+'%'};$('#zoomOut').onclick=()=>{$('#largeImage').style.width=(zoom=Math.max(50,zoom-25))+'%'};
@@ -175,5 +175,5 @@ try{
  $('#bookTitle').textContent=book.title;$('#notice').textContent=book.notice;if(book.source.repository)$('#sourceLink').href=book.source.repository+'/tree/'+book.source.commit;else{$('#sourceLink').removeAttribute('href');$('#sourceLink').textContent=book.source.label;}
  if(book.reflection){document.body.classList.add('reflection-reader');$('#notice').insertAdjacentHTML('afterend','<a href="../introspection/">네 원소 목차로 돌아가기 ↗</a>');const easyTab=$('#viewTabs [data-view=commentary]');easyTab.textContent='쉽게 읽기';$('#viewTabs').prepend(easyTab);document.querySelector('label[for=search]').textContent='본문과 쉽게 읽기 검색';}
  $('#chapterSelect').innerHTML=book.chapters.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.title)+'</option>').join('');$('#albumTab').hidden=!book.albums.length;if(view==='albums'&&!book.albums.length)view='text';
- $('#loading').hidden=true;$('#layout').hidden=false;const term=params.get('find')?.split(/\s+/)[0].toLowerCase(),entry=book.entries.find(x=>entryMatches(slug,x,params.get('verse')));if(term&&entry&&!params.has('view')&&!JSON.stringify(entry.texts).toLowerCase().includes(term)&&JSON.stringify(entry.commentary).toLowerCase().includes(term))view='commentary';if(!go(params.get('verse')||initialLast))go(book.entries[0].id);
+ $('#loading').hidden=true;$('#layout').hidden=false;const term=params.get('find')?.split(/\s+/)[0].toLowerCase(),entry=book.entries.find(x=>entryMatches(slug,x,params.get('verse')));if(term&&entry&&!params.has('view')&&!JSON.stringify(entry.texts).toLowerCase().includes(term)&&JSON.stringify(visibleCommentary(book,entry)||'').toLowerCase().includes(term))view='commentary';if(!go(params.get('verse')||initialLast))go(book.entries[0].id);
 }catch{$('#loading').textContent='자료를 불러오지 못했어요. 전체 서재에서 문헌을 다시 선택해주세요.';$('#bookTitle').textContent='문헌 읽기'}
