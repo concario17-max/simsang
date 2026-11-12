@@ -27,9 +27,9 @@ test('all 492 study entries receive their exact notes and appendices remain sepa
 });
 
 test('easy reading defaults respect explicit views and fall back for unavailable entries',()=>{
- const comic=book.entries[0],entry=book.entries.find(e=>e.chapter==='fire-negative'&&!e.comics?.length&&e.commentary?.length),unready={...entry,commentary:[]},appendix=book.entries.find(e=>e.appendix);
+ const comic=book.entries[0],entry=book.entries.find(e=>e.chapter==='air-negative'&&!e.comics?.length&&e.commentary?.length),unready={...entry,commentary:[]},appendix=book.entries.find(e=>e.appendix);
  assert.equal(hasEasyReading(book,comic),false);
- assert.equal(book.entries.filter(e=>hasEasyReading(book,e)).length,404);
+ assert.equal(book.entries.filter(e=>hasEasyReading(book,e)).length,383);
  assert.equal(resolveReadingView(book,comic,null),'comic');
  assert.equal(resolveReadingView(book,comic,'commentary'),'comic');
  for(const view of ['text','note'])assert.equal(resolveReadingView(book,comic,view),view);
