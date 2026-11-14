@@ -2,16 +2,16 @@ import test from 'node:test';import assert from 'node:assert/strict';import fs f
 const book=JSON.parse(fs.readFileSync(new URL('../data/books/introspection.json',import.meta.url)));
 test('fire has independent positive/negative numbering, introduction and bilingual text',()=>{assert.equal(book.entries.filter(x=>x.id.startsWith('fire.')&&!x.appendix).length,103);assert.equal(new Set(book.entries.map(x=>x.id)).size,book.entries.length);for(const [part,count] of [['positive',40],['negative',62]])for(let n=1;n<=count;n++){const e=book.entries.find(x=>x.id===`fire.${part}.${String(n).padStart(3,'0')}`);assert.ok(e.texts.korean.length>100);assert.ok(e.texts.english.length>100);assert.ok(e.englishTitle);if(part==='negative')assert.equal(e.comics.length,1)}assert.ok(book.entries.find(x=>x.id==='fire.negative.intro').texts.english.startsWith('Negative (passive) qualities'));assert.match(book.entries.find(x=>x.id==='fire.negative.032').texts.english,/^Motto:/);assert.match(book.entries.find(x=>x.id==='fire.negative.059').texts.english,/^Motto:/)});
 
-test('all forty fire-positive entries expose forty-seven ordered existing comic pages',()=>{
+test('all forty fire-positive entries expose seventy-eight ordered replacement comic pages',()=>{
  const entries=book.entries.filter(e=>e.chapter==='fire-positive');
  assert.equal(entries.length,40);
- assert.equal(entries.reduce((n,e)=>n+comicPages(e).length,0),47);
- const doublePages=new Set([1,2,3,4,7,12,18]);
+ assert.equal(entries.reduce((n,e)=>n+comicPages(e).length,0),78);
+ const expectedPages=[3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,1,2,2,2,2,1,2,1,2,2,2,2,1,1,1,2,2,2];
  for(const e of entries){
   const n=Number(e.id.split('.').at(-1)),pages=comicPages(e);
-  assert.equal(pages.length,doublePages.has(n)?2:1);
+  assert.equal(pages.length,expectedPages[n-1]);
   pages.forEach((p,i)=>{
-   assert.equal(p.src,'/assets/introspection/fire/positive/'+String(n).padStart(3,'0')+'/'+String(i+1).padStart(2,'0')+'-v8.png');
+   assert.equal(p.src,'/assets/introspection/fire/positive/'+String(n).padStart(3,'0')+'/'+String(i+1).padStart(2,'0')+'-restart-v1.png');
    assert.ok(p.alt.includes(e.label));
    const b=fs.readFileSync(new URL('..'+p.src,import.meta.url));
    assert.equal(b.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
@@ -31,5 +31,5 @@ test('water numbering, bilingual entries and both appendices are complete',()=>{
 test('all 63 fire-negative entries have comics and corrected assets use fresh versions',()=>{
  const rows=book.entries.filter(e=>e.chapter==='fire-negative');
  assert.equal(rows.reduce((n,e)=>n+comicPages(e).length,0),63);
- for(const e of rows){const part=e.id.split('.').at(-1);const pages=comicPages(e);assert.equal(pages.length,1);const version=new Set(['017','031','033','038','039','046','052','053']).has(part)?2:1;assert.equal(pages[0].src,'/assets/introspection/fire/negative/'+part+'/01-v'+version+'.png');assert.ok(pages[0].alt.includes(e.label));const b=fs.readFileSync(new URL('..'+pages[0].src,import.meta.url));assert.equal(b.subarray(0,8).toString('hex'),'89504e470d0a1a0a');}
+ for(const e of rows){const part=e.id.split('.').at(-1);const pages=comicPages(e);assert.equal(pages.length,1);assert.equal(pages[0].src,'/assets/introspection/fire/negative/'+part+'/01-restart-v1.png');assert.ok(pages[0].alt.includes(e.label));const b=fs.readFileSync(new URL('..'+pages[0].src,import.meta.url));assert.equal(b.subarray(0,8).toString('hex'),'89504e470d0a1a0a');}
 });
